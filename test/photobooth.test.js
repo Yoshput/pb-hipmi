@@ -326,6 +326,23 @@ describe('HIPMI Photobooth - Cloud Upload & Hosting QR Integration', () => {
     assert.equal(testConn.success, true);
   });
 
+  it('defaults to auto cloudProvider and correctly migrates legacy none settings', () => {
+    assert.equal(defaultEventConfig.cloudProvider, 'auto');
+
+    // Test migration: previously saved empty or default config without custom endpoints
+    localStorage.setItem('hipmi_photobooth_v1_config', JSON.stringify({ cloudProvider: 'none' }));
+    const migrated = loadEventConfig();
+    assert.equal(migrated.cloudProvider, 'auto', 'Legacy default none should migrate to auto');
+
+    // Explicit custom endpoint should be preserved
+    localStorage.setItem('hipmi_photobooth_v1_config', JSON.stringify({
+      cloudProvider: 'custom',
+      customUploadEndpoint: 'https://myserver.com/api'
+    }));
+    const preserved = loadEventConfig();
+    assert.equal(preserved.cloudProvider, 'custom');
+  });
+
   it('persists and recovers cloud and hosting configuration in localStorage', () => {
     const newCfg = {
       ...defaultEventConfig,

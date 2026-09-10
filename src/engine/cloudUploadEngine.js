@@ -21,10 +21,14 @@ export class CloudUploadEngine {
    * @returns {Promise<{success: boolean, url?: string, error?: string}>}
    */
   static async uploadPhoto({ blob, dataUrl, sessionId, customization = {}, eventConfig = {} }) {
-    const provider = eventConfig.cloudProvider || 'none';
+    const provider = eventConfig.cloudProvider || 'auto';
 
     if (provider === 'none') {
       return { success: false, reason: 'offline_mode' };
+    }
+
+    if (provider === 'auto') {
+      return this.uploadAuto({ blob, dataUrl, sessionId, customization, eventConfig });
     }
 
     if (provider === 'imgbb') {
@@ -42,6 +46,100 @@ export class CloudUploadEngine {
     }
 
     return { success: false, reason: 'unknown_provider' };
+  }
+
+  /**
+   * Automatic Zero-Config Cloud Upload via Serverless / Free CDN
+   * Seamlessly uploads the composite photo so mobile scans can immediately download.
+   */
+  static async uploadAuto({ blob, dataUrl, sessionId, customization = {}, eventConfig = {} }) {
+    const payload = {
+      dataUrl,
+      sessionId,
+      customization,
+      apiKey: eventConfig?.imgbbApiKey || ''
+    };
+
+    // 1. Try local/same-origin /api/upload
+    let endpoint = '/api/upload';
+    if (typeof window !== 'undefined' && window.location) {
+      if (window.location.protocol === 'file:') {
+        endpoint = 'https://pb-hipmi.vercel.app/api/upload';
+      }
+    }
+
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 20000);
+
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+
+      if (response.ok) {
+        const json = await response.json();
+        if (json?.success && json?.url) {
+          return {
+            success: true,
+            url: json.url,
+            provider: json.provider || 'auto'
+          };
+        }
+      }
+
+      // If local dev or relative endpoint failed, fallback to production Vercel endpoint
+      if (endpoint === '/api/upload' && typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+        return this._uploadToProductionFallback(payload);
+      }
+
+      return {
+        success: false,
+        error: 'Upload gagal menghubungi layanan cloud.'
+      };
+    } catch (err) {
+      // Local dev fallback if /api/upload is unreachable
+      if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+        return this._uploadToProductionFallback(payload);
+      }
+      return {
+        success: false,
+        error: err.message || 'Koneksi ke cloud terputus.'
+      };
+    }
+  }
+
+  /**
+   * Fallback for local development when running without Vercel serverless
+   */
+  static async _uploadToProductionFallback(payload) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 20000);
+
+      const res = await fetch('https://pb-hipmi.vercel.app/api/upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+
+      if (res.ok) {
+        const json = await res.json();
+        if (json?.success && json?.url) {
+          return { success: true, url: json.url, provider: 'auto_fallback' };
+        }
+      }
+      return { success: false, error: 'Fallback upload gagal.' };
+    } catch (e) {
+      return { success: false, error: e.message };
+    }
   }
 
   /**
@@ -177,13 +275,30 @@ export class CloudUploadEngine {
    * Test connection & credentials for operator configuration
    */
   static async testConnection(eventConfig) {
-    const provider = eventConfig.cloudProvider;
+    const provider = eventConfig.cloudProvider || 'auto';
     if (provider === 'none') {
       return { success: true, message: 'Mode offline/lokal aktif (tanpa upload).' };
     }
 
-    // Generate tiny 1x1 test PNG base64
+    // Generate test PNG dataUrl
     const test1x1Png = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+
+    if (provider === 'auto') {
+      const res = await this.uploadAuto({
+        dataUrl: test1x1Png,
+        sessionId: `TEST_${Date.now()}`,
+        customization: { name: 'Test Connection' },
+        eventConfig
+      });
+      if (res.success) {
+        return {
+          success: true,
+          url: res.url,
+          message: 'Koneksi Cloud Otomatis Berhasil! CDN siap digunakan.'
+        };
+      }
+      return { success: false, error: res.error || 'Gagal terhubung ke Cloud Otomatis.' };
+    }
 
     if (provider === 'imgbb') {
       const res = await this.uploadToImgBB({

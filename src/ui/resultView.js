@@ -178,7 +178,7 @@ export class ResultView {
     const cloudLabel = div.querySelector('#qr-cloud-label');
     const qrSublabel = div.querySelector('#qr-sublabel');
 
-    // 1. Initial Local/Session QR Code Render
+    // 1. Initial Placeholder/Local QR Code Render while uploading
     const initialSessionUrl = QREngine.getSessionPhotoUrl(this.sessionId, '', this.eventConfig);
     try {
       await QREngine.renderToCanvas(qrCanvas, initialSessionUrl, { width: 220 });
@@ -186,11 +186,12 @@ export class ResultView {
       console.warn("Initial QR generation error:", err);
     }
 
-    // 2. Background Cloud Upload for Hosted Real-World Experience
-    const provider = this.eventConfig.cloudProvider || 'none';
+    // 2. Background Cloud Upload for Live Mobile QR Scan
+    const provider = this.eventConfig.cloudProvider || 'auto';
     if (provider !== 'none') {
       cloudBadge.style.display = 'inline-flex';
-      cloudLabel.textContent = 'Mengunggah ke cloud...';
+      cloudBadge.className = 'qr-cloud-badge';
+      cloudLabel.textContent = 'Menyiapkan QR Code untuk HP...';
 
       try {
         const uploadRes = await CloudUploadEngine.uploadPhoto({
@@ -205,7 +206,7 @@ export class ResultView {
 
         if (uploadRes.success && uploadRes.url) {
           this.uploadedUrl = uploadRes.url;
-          cloudBadge.classList.add('status-success');
+          cloudBadge.className = 'qr-cloud-badge status-success';
           cloudLabel.textContent = '✅ Siap di-scan di HP';
           if (qrSublabel) {
             qrSublabel.textContent = 'Buka & unduh langsung dari HP kamu';
@@ -214,17 +215,17 @@ export class ResultView {
           // Update IndexedDB history with cloud URL
           await historyStorage.updateUploadedUrl(this.sessionId, uploadRes.url);
 
-          // Re-render QR Code with live public hosting URL
+          // Re-render QR Code with live direct image URL
           const hostedUrl = QREngine.getSessionPhotoUrl(this.sessionId, uploadRes.url, this.eventConfig);
           await QREngine.renderToCanvas(qrCanvas, hostedUrl, { width: 220 });
         } else {
-          cloudBadge.classList.add('status-warning');
+          cloudBadge.className = 'qr-cloud-badge status-warning';
           cloudLabel.textContent = 'Offline (Simpan di booth)';
         }
       } catch (err) {
         console.warn('Background upload exception:', err);
         if (!this.isDestroyed && cloudLabel) {
-          cloudBadge.classList.add('status-warning');
+          cloudBadge.className = 'qr-cloud-badge status-warning';
           cloudLabel.textContent = 'Offline (Simpan di booth)';
         }
       }

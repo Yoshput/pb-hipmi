@@ -151,9 +151,10 @@ export class OperatorModal {
             <div class="form-group">
               <label class="form-label" for="cfg-cloud-provider">Layanan Cloud Upload Foto</label>
               <select id="cfg-cloud-provider" class="form-select">
-                <option value="none" ${curProvider === 'none' ? 'selected' : ''}>Offline / Tanpa Upload (Hanya Simpan di Booth)</option>
-                <option value="imgbb" ${curProvider === 'imgbb' ? 'selected' : ''}>ImgBB API (Gratis, Tanpa Backend Server)</option>
+                <option value="auto" ${curProvider === 'auto' ? 'selected' : ''}>Otomatis Cloud (Vercel & CDN Siap Pakai - Rekomendasi)</option>
+                <option value="imgbb" ${curProvider === 'imgbb' ? 'selected' : ''}>ImgBB API (Gratis dengan API Key Sendiri)</option>
                 <option value="custom" ${curProvider === 'custom' ? 'selected' : ''}>Custom Hosting Endpoint (API / PHP Sendiri)</option>
+                <option value="none" ${curProvider === 'none' ? 'selected' : ''}>Offline / Tanpa Upload (Hanya Simpan di Booth)</option>
               </select>
             </div>
 

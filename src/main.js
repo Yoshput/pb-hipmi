@@ -428,7 +428,8 @@ class PhotoboothApp {
       }
     }
 
-    if (displayPhotoUrl) {
+    // Helper to render photo view once URL is resolved
+    const showPhotoView = (finalUrl) => {
       this.appEl.innerHTML = `
         <div class="mobile-viewer-screen view-enter">
           <div class="mobile-viewer-content">
@@ -443,19 +444,19 @@ class PhotoboothApp {
 
             <!-- Hero Image Card (Full Aspect Ratio, Never Clipped) -->
             <div class="mobile-viewer-card">
-              <img src="${displayPhotoUrl}" alt="Photobooth Memory" id="mobile-photo-img" />
+              <img src="${finalUrl}" alt="Photobooth Memory" id="mobile-photo-img" />
             </div>
 
             <!-- Mobile Action Buttons -->
             <div class="mobile-viewer-actions">
-              <a href="${displayPhotoUrl}" download="hipmi-photobooth-${safeSessionId}.png" target="_blank" class="btn-primary btn-accent" id="btn-mobile-download" style="width: 100%; min-height: 54px; font-size: 16px; font-weight: 800; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 10px;">
+              <button class="btn-primary btn-accent" id="btn-mobile-download" style="width: 100%; min-height: 54px; font-size: 16px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; gap: 10px; border: none; cursor: pointer;">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                   <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                   <polyline points="7 10 12 15 17 10"></polyline>
                   <line x1="12" y1="15" x2="12" y2="3"></line>
                 </svg>
                 Download Foto HD
-              </a>
+              </button>
             </div>
 
             <!-- Tips Card -->
@@ -467,34 +468,134 @@ class PhotoboothApp {
           </div>
         </div>
       `;
-    } else {
-      this.appEl.innerHTML = `
-        <div class="mobile-viewer-screen view-enter" style="justify-content: center;">
-          <div class="mobile-viewer-content">
-            <div class="mobile-viewer-header">
-              <img src="${this.eventConfig.logoHipmi}" alt="HIPMI" style="height: 64px; margin: 0 auto 16px;" />
-              <h2 style="font-size: 22px; font-weight: 800; color: var(--color-accent); margin-bottom: 6px;">${safeOrg}</h2>
-              <div style="display: inline-block; padding: 4px 12px; border-radius: 9999px; background: rgba(200,168,75,0.15); border: 1px solid rgba(200,168,75,0.3); font-size: 12px; color: #EAD79B; font-weight: 700;">
-                SESSION ${safeSessionId}
-              </div>
-            </div>
 
-            <div style="width: 100%; max-width: 420px; background: #14161B; border: 1px solid #242730; border-radius: 16px; padding: 28px 24px; margin-bottom: 28px; box-shadow: 0 16px 40px rgba(0,0,0,0.4); flex-shrink: 0;">
-            <div style="width: 52px; height: 52px; border-radius: 50%; background: rgba(200,168,75,0.15); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: var(--color-accent);">
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                <polyline points="21 15 16 10 5 21"></polyline>
-              </svg>
+      // 1-Tap HD Download Button with Blob fallback
+      const dlBtn = this.appEl.querySelector('#btn-mobile-download');
+      if (dlBtn) {
+        dlBtn.addEventListener('click', async (e) => {
+          e.preventDefault();
+          const originalContent = dlBtn.innerHTML;
+          dlBtn.innerHTML = `<span>⏳ Mengunduh Foto...</span>`;
+          dlBtn.disabled = true;
+
+          try {
+            const res = await fetch(finalUrl);
+            const blob = await res.blob();
+            const objUrl = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = objUrl;
+            a.download = `hipmi-telkom-purwokerto-${safeSessionId}.png`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(objUrl), 1500);
+
+            dlBtn.innerHTML = `<span>✅ Foto Berhasil Disimpan!</span>`;
+            setTimeout(() => {
+              dlBtn.innerHTML = originalContent;
+              dlBtn.disabled = false;
+            }, 2500);
+          } catch (err) {
+            // Fallback: direct window open
+            window.open(finalUrl, '_blank');
+            dlBtn.innerHTML = originalContent;
+            dlBtn.disabled = false;
+          }
+        });
+      }
+    };
+
+    // If photo URL is immediately available, display it
+    if (displayPhotoUrl) {
+      showPhotoView(displayPhotoUrl);
+      return;
+    }
+
+    // Otherwise, show smooth polling loader while waiting for booth background upload
+    this.appEl.innerHTML = `
+      <div class="mobile-viewer-screen view-enter" style="justify-content: center;">
+        <div class="mobile-viewer-content" style="text-align: center;">
+          <div class="mobile-viewer-header">
+            <img src="${this.eventConfig.logoHipmi}" alt="HIPMI" style="height: 56px; margin: 0 auto 12px;" />
+            <h2 style="font-size: 20px; font-weight: 800; color: var(--color-accent); margin-bottom: 4px;">${safeOrg}</h2>
+            <div style="display: inline-block; padding: 4px 12px; border-radius: 9999px; background: rgba(200,168,75,0.15); border: 1px solid rgba(200,168,75,0.3); font-size: 11px; color: #EAD79B; font-weight: 700;">
+              SESSION #${safeSessionId}
             </div>
-            <h3 style="font-size: 17px; font-weight: 700; color: #FFFFFF; margin-bottom: 8px;">Event Station Photobooth</h3>
-            <p style="font-size: 14px; color: #9E9EA7; line-height: 1.5; margin: 0;">
-              Foto beresolusi tinggi kamu diproses di layar monitor booth. Silakan unduh langsung dari layar booth atau hubungi operator.
+          </div>
+
+          <div style="width: 100%; max-width: 400px; background: #14161B; border: 1px solid #242730; border-radius: 16px; padding: 32px 24px; margin: 20px auto; box-shadow: 0 16px 40px rgba(0,0,0,0.4);">
+            <div class="pulse-indicator" style="width: 48px; height: 48px; border-radius: 50%; background: rgba(200,168,75,0.2); border: 2px solid var(--color-accent); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+              <span style="font-size: 20px;">📸</span>
+            </div>
+            <h3 style="font-size: 17px; font-weight: 800; color: #FFFFFF; margin-bottom: 8px;">Menyiapkan Foto Kamu...</h3>
+            <p style="font-size: 13px; color: #9E9EA7; line-height: 1.5; margin: 0 0 20px;" id="mobile-loading-status">
+              Sedang mengambil foto beresolusi tinggi dari booth...
             </p>
+            <div style="width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 9999px; overflow: hidden;">
+              <div style="width: 50%; height: 100%; background: var(--color-accent); animation: pulse 1.5s infinite ease-in-out;"></div>
+            </div>
           </div>
         </div>
-      `;
-    }
+      </div>
+    `;
+
+    // Poll backend API for recent upload (4 attempts, 1.5s interval)
+    let attempts = 0;
+    const maxAttempts = 4;
+
+    const pollPhoto = async () => {
+      attempts++;
+      try {
+        const res = await fetch(`/api/upload?session=${encodeURIComponent(sessionId)}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data?.success && data?.url) {
+            showPhotoView(data.url);
+            return;
+          }
+        }
+      } catch (err) {
+        // Handled
+      }
+
+      if (attempts < maxAttempts) {
+        setTimeout(pollPhoto, 1500);
+      } else {
+        // Fallback: If still not found after polling
+        this.appEl.innerHTML = `
+          <div class="mobile-viewer-screen view-enter" style="justify-content: center;">
+            <div class="mobile-viewer-content">
+              <div class="mobile-viewer-header">
+                <img src="${this.eventConfig.logoHipmi}" alt="HIPMI" style="height: 64px; margin: 0 auto 16px;" />
+                <h2 style="font-size: 22px; font-weight: 800; color: var(--color-accent); margin-bottom: 6px;">${safeOrg}</h2>
+                <div style="display: inline-block; padding: 4px 12px; border-radius: 9999px; background: rgba(200,168,75,0.15); border: 1px solid rgba(200,168,75,0.3); font-size: 12px; color: #EAD79B; font-weight: 700;">
+                  SESSION ${safeSessionId}
+                </div>
+              </div>
+
+              <div style="width: 100%; max-width: 420px; background: #14161B; border: 1px solid #242730; border-radius: 16px; padding: 28px 24px; margin-bottom: 28px; box-shadow: 0 16px 40px rgba(0,0,0,0.4); text-align: center;">
+                <div style="width: 52px; height: 52px; border-radius: 50%; background: rgba(200,168,75,0.15); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: var(--color-accent);">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                  </svg>
+                </div>
+                <h3 style="font-size: 17px; font-weight: 700; color: #FFFFFF; margin-bottom: 8px;">Event Station Photobooth</h3>
+                <p style="font-size: 14px; color: #9E9EA7; line-height: 1.5; margin: 0 0 20px;">
+                  Foto resolusi tinggi kamu diproses di layar monitor booth. Silakan scan ulang QR code di layar booth atau unduh langsung dari monitor booth.
+                </p>
+                <button onclick="window.location.reload()" class="btn-primary btn-accent" style="width: 100%; min-height: 48px; font-weight: 800;">
+                  🔄 Muat Ulang Halaman
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+    };
+
+    setTimeout(pollPhoto, 1200);
   }
 
   /**

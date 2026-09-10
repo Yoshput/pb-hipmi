@@ -36,8 +36,8 @@ export const defaultEventConfig = {
   selectedCameraId: "", // Empty = auto/default
 
   // Cloud & Hosting Upload Settings for Live QR Scanning
-  hostingUrl: "", // e.g. "https://photobooth.hipmitelku.com" (used for QR code target)
-  cloudProvider: "none", // "none" | "imgbb" | "custom"
+  hostingUrl: "", // e.g. "https://pb-hipmi.vercel.app" (used for QR code target)
+  cloudProvider: "auto", // "auto" (Zero-config CDN) | "imgbb" | "custom" | "none"
   imgbbApiKey: "", // Free key from https://api.imgbb.com/
   customUploadEndpoint: "", // e.g. "https://your-hosting.com/api/upload"
   qrTarget: "viewer" // "viewer" (mobile web landing page) | "direct" (direct photo file)
@@ -62,6 +62,20 @@ export function loadEventConfig() {
         let dt = typeof parsed.dateText === 'string' && parsed.dateText.trim() ? parsed.dateText.trim() : defaultEventConfig.dateText;
         if (dt.toUpperCase().includes('BANDUNG')) dt = defaultEventConfig.dateText;
 
+        // Migrate cloudProvider: if previously 'none' without any custom config, upgrade to 'auto'
+        let provider = 'auto';
+        if (['auto', 'imgbb', 'custom'].includes(parsed.cloudProvider)) {
+          provider = parsed.cloudProvider;
+        } else if (parsed.cloudProvider === 'none') {
+          // If operator explicitly configured offline or custom endpoint
+          if (parsed.customUploadEndpoint || parsed.imgbbApiKey) {
+            provider = 'none';
+          } else {
+            // Auto-upgrade legacy default to 'auto' so QR mobile scanning works instantly
+            provider = 'auto';
+          }
+        }
+
         return {
           ...defaultEventConfig,
           organization: org,
@@ -75,7 +89,7 @@ export function loadEventConfig() {
           mirrorCamera: typeof parsed.mirrorCamera === 'boolean' ? parsed.mirrorCamera : true,
           selectedCameraId: typeof parsed.selectedCameraId === 'string' ? parsed.selectedCameraId : "",
           hostingUrl: typeof parsed.hostingUrl === 'string' ? parsed.hostingUrl.trim() : "",
-          cloudProvider: ['none', 'imgbb', 'custom'].includes(parsed.cloudProvider) ? parsed.cloudProvider : "none",
+          cloudProvider: provider,
           imgbbApiKey: typeof parsed.imgbbApiKey === 'string' ? parsed.imgbbApiKey.trim() : "",
           customUploadEndpoint: typeof parsed.customUploadEndpoint === 'string' ? parsed.customUploadEndpoint.trim() : "",
           qrTarget: ['viewer', 'direct'].includes(parsed.qrTarget) ? parsed.qrTarget : "viewer"
