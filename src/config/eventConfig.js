@@ -3,12 +3,12 @@
  * Centralized dynamic configuration object for the photobooth experience.
  */
 export const defaultEventConfig = {
-  organization: "HIPMI Telkom University",
-  subOrganization: "BPC HIPMI PT TELKOM UNIVERSITY",
-  eventName: "Entrepreneur Summit 2026",
+  organization: "HIPMI PT Telkom University Purwokerto",
+  subOrganization: "BPC HIPMI PT TELKOM UNIVERSITY PURWOKERTO",
+  eventName: "PKKMB 2026",
   eventTagline: "Ignite Passion, Build Future",
   year: "2026",
-  dateText: "BANDUNG, 2026",
+  dateText: "PURWOKERTO, 2026",
   
   // Official Brand Assets
   logoHipmi: "/assets/logo-hipmi.png",
@@ -52,12 +52,23 @@ export function loadEventConfig() {
     if (saved) {
       const parsed = JSON.parse(saved);
       if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+        // Automatically migrate old default Bandung / non-Purwokerto values
+        let org = typeof parsed.organization === 'string' && parsed.organization.trim() ? parsed.organization.trim() : defaultEventConfig.organization;
+        if (org === 'HIPMI Telkom University') org = defaultEventConfig.organization;
+
+        let subOrg = typeof parsed.subOrganization === 'string' && parsed.subOrganization.trim() ? parsed.subOrganization.trim() : defaultEventConfig.subOrganization;
+        if (subOrg === 'BPC HIPMI PT TELKOM UNIVERSITY') subOrg = defaultEventConfig.subOrganization;
+
+        let dt = typeof parsed.dateText === 'string' && parsed.dateText.trim() ? parsed.dateText.trim() : defaultEventConfig.dateText;
+        if (dt.toUpperCase().includes('BANDUNG')) dt = defaultEventConfig.dateText;
+
         return {
           ...defaultEventConfig,
-          organization: typeof parsed.organization === 'string' && parsed.organization.trim() ? parsed.organization.trim() : defaultEventConfig.organization,
-          subOrganization: typeof parsed.subOrganization === 'string' && parsed.subOrganization.trim() ? parsed.subOrganization.trim() : defaultEventConfig.subOrganization,
+          organization: org,
+          subOrganization: subOrg,
           eventName: typeof parsed.eventName === 'string' && parsed.eventName.trim() ? parsed.eventName.trim() : defaultEventConfig.eventName,
           year: typeof parsed.year === 'string' && parsed.year.trim() ? parsed.year.trim() : defaultEventConfig.year,
+          dateText: dt,
           photoCount: Number.isInteger(parsed.photoCount) && parsed.photoCount >= 1 && parsed.photoCount <= 6 ? parsed.photoCount : defaultEventConfig.photoCount,
           countdownSeconds: Number.isInteger(parsed.countdownSeconds) && parsed.countdownSeconds >= 1 && parsed.countdownSeconds <= 10 ? parsed.countdownSeconds : defaultEventConfig.countdownSeconds,
           autoResetSeconds: Number.isInteger(parsed.autoResetSeconds) && parsed.autoResetSeconds >= 0 && parsed.autoResetSeconds <= 120 ? parsed.autoResetSeconds : defaultEventConfig.autoResetSeconds,

@@ -63,7 +63,7 @@ class CanvasRenderer {
    * Helper to draw text that dynamically scales down to fit available maxWidth
    * Unicode-safe to prevent breaking emoji or surrogate pairs.
    */
-  drawFittedText(ctx, text, x, y, maxWidth, maxFontSize = 24, fontWeight = '700', align = 'left', color = '#111111') {
+  drawFittedText(ctx, text, x, y, maxWidth, maxFontSize = 32, fontWeight = '800', align = 'left', color = '#111111') {
     if (text === null || text === undefined) return;
     const cleanText = String(text).trim();
     if (!cleanText) return;
@@ -73,8 +73,8 @@ class CanvasRenderer {
     ctx.fillStyle = color;
 
     let fontSize = maxFontSize;
-    const minFontSize = 12;
-    const fontFamily = '-apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif';
+    const minFontSize = 16;
+    const fontFamily = '-apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", "Arial", sans-serif';
 
     ctx.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
     let textWidth = ctx.measureText(cleanText).width;
@@ -298,100 +298,103 @@ class CanvasRenderer {
     const goldColor = template.accentColor || '#C8A84B';
 
     if (template.id === 'signature') {
-      const logoH = 65;
+      const logoH = 80;
       const logoW = this._calcLogoWidth(logoHipmi, logoH);
-      ctx.drawImage(logoHipmi, 80, 65, logoW, logoH);
+      ctx.drawImage(logoHipmi, 80, 55, logoW, logoH);
 
       const maxTextW = Math.max(50, width - 80 - (80 + logoW + 40));
+      const orgTitle = "HIPMI PT TELKOM PURWOKERTO";
+      const eventTitle = (customization.eventName || eventConfig.eventName || "PKKMB 2026").toUpperCase();
+
       this.drawFittedText(
         ctx,
-        eventConfig.organization.toUpperCase(),
+        orgTitle,
         width - 80,
-        90,
+        88,
         maxTextW,
-        24,
-        '700',
+        34,
+        '900',
         'right',
         textColor
       );
 
       this.drawFittedText(
         ctx,
-        customization.eventName || eventConfig.eventName,
+        eventTitle,
         width - 80,
-        115,
+        122,
         maxTextW,
-        15,
-        '500',
+        20,
+        '800',
         'right',
-        '#8E8E93'
+        goldColor
       );
     } else if (template.id === 'bold') {
-      const logoH = 75;
+      const logoH = 85;
       const logoW = this._calcLogoWidth(logoHipmi, logoH);
-      ctx.drawImage(logoHipmi, 60, 60, logoW, logoH);
+      ctx.drawImage(logoHipmi, 60, 50, logoW, logoH);
 
       ctx.textAlign = 'left';
       ctx.fillStyle = textColor;
-      ctx.font = '900 48px -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif';
-      ctx.fillText("HIPMI", 60 + logoW + 20, 102);
+      ctx.font = '900 54px -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Arial, sans-serif';
+      ctx.fillText("HIPMI", 60 + logoW + 20, 96);
 
       ctx.fillStyle = goldColor;
-      ctx.font = '700 20px -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif';
-      ctx.fillText("TELKOM UNIVERSITY", 60 + logoW + 24, 130);
+      ctx.font = '800 22px -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Arial, sans-serif';
+      ctx.fillText("PT TELKOM PURWOKERTO", 60 + logoW + 24, 126);
 
       ctx.textAlign = 'right';
       ctx.fillStyle = '#FFFFFF';
-      ctx.font = '600 16px -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif';
-      ctx.fillText(eventConfig.year, width - 60, 95);
-      ctx.fillStyle = '#888888';
-      ctx.font = '500 13px -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif';
-      ctx.fillText("OFFICIAL ARCHIVE", width - 60, 120);
+      ctx.font = '800 20px -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Arial, sans-serif';
+      ctx.fillText(eventConfig.year, width - 60, 92);
+      ctx.fillStyle = goldColor;
+      ctx.font = '800 16px -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Arial, sans-serif';
+      ctx.fillText("PURWOKERTO • 2026", width - 60, 122);
     } else if (template.id === 'business') {
-      const logoH = 60;
+      const logoH = 75;
       const logoW = this._calcLogoWidth(logoHipmi, logoH);
-      ctx.drawImage(logoHipmi, 90, 65, logoW, logoH);
+      ctx.drawImage(logoHipmi, 90, 55, logoW, logoH);
 
       const maxTextW = Math.max(50, width - (90 + logoW + 40) - 90);
       this.drawFittedText(
         ctx,
-        "EXECUTIVE FORUM & NETWORKING",
+        "PKKMB & BUSINESS SUMMIT",
         90 + logoW + 25,
-        90,
+        86,
         maxTextW,
-        18,
-        '700',
+        28,
+        '900',
         'left',
         goldColor
       );
 
       this.drawFittedText(
         ctx,
-        "BPC HIPMI PT TELKOM UNIVERSITY",
+        "HIPMI PT TELKOM UNIVERSITY PURWOKERTO",
         90 + logoW + 25,
-        115,
+        118,
         maxTextW,
-        15,
-        '500',
+        20,
+        '800',
         'left',
-        '#CCCCCC'
+        '#FFFFFF'
       );
 
       ctx.fillStyle = goldColor;
-      ctx.fillRect(90, 145, width - 180, 1);
+      ctx.fillRect(90, 145, width - 180, 2);
     } else if (template.id === 'youth') {
-      const logoH = 58;
+      const logoH = 75;
       const logoW = this._calcLogoWidth(logoHipmi, logoH);
-      ctx.drawImage(logoHipmi, 70, 65, logoW, logoH);
+      ctx.drawImage(logoHipmi, 70, 55, logoW, logoH);
 
       const maxTextW = Math.max(50, width - (70 + logoW + 40) - 70);
       this.drawFittedText(
         ctx,
         "FUTURE ENTREPRENEURS",
         70 + logoW + 20,
-        95,
+        90,
         maxTextW,
-        28,
+        36,
         '900',
         'left',
         '#111111'
@@ -399,29 +402,29 @@ class CanvasRenderer {
 
       this.drawFittedText(
         ctx,
-        "HIPMI TELKOM UNIVERSITY • 2026",
+        "HIPMI TELKOM PURWOKERTO • 2026",
         70 + logoW + 20,
-        120,
+        122,
         maxTextW,
-        15,
-        '700',
+        20,
+        '800',
         'left',
         goldColor
       );
     } else if (template.id === 'strip') {
-      const logoH = 50;
+      const logoH = 65;
       const logoW = this._calcLogoWidth(logoHipmi, logoH);
       const startX = (width - logoW) / 2;
-      ctx.drawImage(logoHipmi, startX, 45, logoW, logoH);
+      ctx.drawImage(logoHipmi, startX, 35, logoW, logoH);
 
       this.drawFittedText(
         ctx,
-        "HIPMI TELKOM UNIVERSITY",
+        "HIPMI PT TELKOM PURWOKERTO",
         width / 2,
-        115,
-        width - 100,
-        16,
-        '800',
+        120,
+        width - 80,
+        24,
+        '900',
         'center',
         '#111111'
       );
@@ -431,86 +434,86 @@ class CanvasRenderer {
   _renderFooter(ctx, template, eventConfig, customization, logoHipmi, logoTelu, width, height) {
     const isDark = template.background === '#0E0E10' || template.background === '#12141A';
     const textColor = template.textColor || (isDark ? '#FFFFFF' : '#111111');
-    const subColor = isDark ? '#9E9E9E' : '#6E6E73';
     const goldColor = template.accentColor || '#C8A84B';
 
     if (template.id === 'signature') {
-      const footerY = height - 100;
-      const teluH = 42;
+      const footerY = height - 105;
+      const teluH = 55;
       const teluW = this._calcLogoWidth(logoTelu, teluH);
-      ctx.drawImage(logoTelu, 80, footerY - 5, teluW, teluH);
+      ctx.drawImage(logoTelu, 80, footerY - 10, teluW, teluH);
 
       const maxTextW = Math.max(50, width - 80 - (80 + teluW + 40));
-      const nameText = customization.name ? customization.name.toUpperCase() : "HIPMI TELKOM UNIVERSITY";
-      const subText = customization.message || eventConfig.dateText;
+      const nameText = customization.name ? customization.name.toUpperCase() : "HIPMI PT TELKOM PURWOKERTO";
+      const subText = customization.message || "PURWOKERTO, 2026";
 
-      this.drawFittedText(ctx, nameText, width - 80, footerY + 5, maxTextW, 24, '700', 'right', textColor);
-      this.drawFittedText(ctx, subText, width - 80, footerY + 30, maxTextW, 15, '500', 'right', subColor);
+      this.drawFittedText(ctx, nameText, width - 80, footerY + 8, maxTextW, 36, '900', 'right', textColor);
+      this.drawFittedText(ctx, subText, width - 80, footerY + 40, maxTextW, 22, '800', 'right', goldColor);
     } else if (template.id === 'bold') {
-      const footerY = height - 100;
-      const teluH = 40;
+      const footerY = height - 105;
+      const teluH = 52;
       const teluW = this._calcLogoWidth(logoTelu, teluH);
-      ctx.drawImage(logoTelu, width - 60 - teluW, footerY - 5, teluW, teluH);
+      ctx.drawImage(logoTelu, width - 60 - teluW, footerY - 10, teluW, teluH);
 
       const maxTextW = Math.max(50, (width - 60 - teluW - 40) - 60);
-      const nameText = customization.name ? customization.name.toUpperCase() : "ENTREPRENEURIAL SPIRIT";
-      const subText = customization.message || "MAKE A MOMENT. BUILD THE FUTURE.";
+      const nameText = customization.name ? customization.name.toUpperCase() : "HIPMI PURWOKERTO";
+      const subText = customization.message || "IGNITE PASSION • BUILD FUTURE • 2026";
 
-      this.drawFittedText(ctx, nameText, 60, footerY + 10, maxTextW, 22, '800', 'left', goldColor);
-      this.drawFittedText(ctx, subText, 60, footerY + 35, maxTextW, 15, '500', 'left', '#777777');
+      this.drawFittedText(ctx, nameText, 60, footerY + 8, maxTextW, 36, '900', 'left', goldColor);
+      this.drawFittedText(ctx, subText, 60, footerY + 40, maxTextW, 20, '800', 'left', '#E0E0E0');
     } else if (template.id === 'business') {
-      const footerY = height - 105;
+      const footerY = height - 110;
       ctx.fillStyle = goldColor;
-      ctx.fillRect(90, footerY - 20, width - 180, 1);
+      ctx.fillRect(90, footerY - 20, width - 180, 2);
 
-      const teluH = 38;
+      const teluH = 48;
       const teluW = this._calcLogoWidth(logoTelu, teluH);
-      ctx.drawImage(logoTelu, width - 90 - teluW, footerY - 2, teluW, teluH);
+      ctx.drawImage(logoTelu, width - 90 - teluW, footerY - 8, teluW, teluH);
 
       const maxTextW = Math.max(50, (width - 90 - teluW - 40) - 90);
-      const nameText = customization.name ? customization.name.toUpperCase() : "PARTICIPANT OF EXCELLENCE";
-      const subText = customization.eventName || eventConfig.eventName;
+      const nameText = customization.name ? customization.name.toUpperCase() : "PKKMB 2026 PARTICIPANT";
+      const subText = customization.eventName || "HIPMI PT TELKOM PURWOKERTO";
 
-      this.drawFittedText(ctx, nameText, 90, footerY + 15, maxTextW, 20, '700', 'left', '#FFFFFF');
-      this.drawFittedText(ctx, subText, 90, footerY + 38, maxTextW, 14, '500', 'left', goldColor);
+      this.drawFittedText(ctx, nameText, 90, footerY + 12, maxTextW, 32, '900', 'left', '#FFFFFF');
+      this.drawFittedText(ctx, subText, 90, footerY + 42, maxTextW, 20, '800', 'left', goldColor);
     } else if (template.id === 'youth') {
-      const footerY = height - 100;
-      const teluH = 40;
+      const footerY = height - 105;
+      const teluH = 52;
       const teluW = this._calcLogoWidth(logoTelu, teluH);
-      ctx.drawImage(logoTelu, width - 70 - teluW, footerY - 5, teluW, teluH);
+      ctx.drawImage(logoTelu, width - 70 - teluW, footerY - 10, teluW, teluH);
 
       const maxTextW = Math.max(50, (width - 70 - teluW - 40) - 70);
-      const nameText = customization.name ? customization.name : "YOUNG ENTREPRENEUR";
-      const subText = customization.message || "#PENGUSAHAMUDA • TELKOM UNIVERSITY";
+      const nameText = customization.name ? customization.name.toUpperCase() : "YOUNG ENTREPRENEUR";
+      const subText = customization.message || "#PENGUSAHAMUDA • TELKOM PURWOKERTO";
 
-      this.drawFittedText(ctx, nameText, 70, footerY + 10, maxTextW, 24, '800', 'left', '#111111');
-      this.drawFittedText(ctx, subText, 70, footerY + 35, maxTextW, 15, '600', 'left', goldColor);
+      this.drawFittedText(ctx, nameText, 70, footerY + 8, maxTextW, 36, '900', 'left', '#111111');
+      this.drawFittedText(ctx, subText, 70, footerY + 40, maxTextW, 22, '800', 'left', goldColor);
     } else if (template.id === 'strip') {
-      const footerY = height - 150;
+      const footerY = height - 160;
       ctx.fillStyle = goldColor;
-      ctx.fillRect((width - 80) / 2, footerY, 80, 3);
+      ctx.fillRect((width - 120) / 2, footerY, 120, 4);
 
-      const nameText = customization.name ? customization.name.toUpperCase() : "HIPMI TEL-U";
-      const subText = customization.eventName || eventConfig.eventName;
+      const nameText = customization.name ? customization.name.toUpperCase() : "HIPMI TELKOM PURWOKERTO";
+      const subText = customization.eventName || "PKKMB 2026 • PURWOKERTO";
 
-      this.drawFittedText(ctx, nameText, width / 2, footerY + 35, width - 100, 22, '800', 'center', '#111111');
-      this.drawFittedText(ctx, subText, width / 2, footerY + 60, width - 100, 14, '600', 'center', '#777777');
+      this.drawFittedText(ctx, nameText, width / 2, footerY + 38, width - 80, 28, '900', 'center', '#111111');
+      this.drawFittedText(ctx, subText, width / 2, footerY + 70, width - 80, 20, '800', 'center', goldColor);
 
-      const teluH = 32;
+      const teluH = 45;
       const teluW = this._calcLogoWidth(logoTelu, teluH);
-      ctx.drawImage(logoTelu, (width - teluW) / 2, footerY + 75, teluW, teluH);
+      ctx.drawImage(logoTelu, (width - teluW) / 2, footerY + 90, teluW, teluH);
     } else if (template.id === 'polaroid') {
+      // Large, bold, high-contrast, crystal clear Polaroid footer
       const footerY = height - 180;
-      const logoH = 45;
+      const logoH = 80;
       const logoW = this._calcLogoWidth(logoHipmi, logoH);
-      ctx.drawImage(logoHipmi, width - 80 - logoW, footerY + 25, logoW, logoH);
+      ctx.drawImage(logoHipmi, width - 80 - logoW, footerY + 15, logoW, logoH);
 
       const maxTextW = Math.max(50, width - 80 - (80 + logoW + 40));
-      const nameText = customization.name ? customization.name : "HIPMI Telkom University";
-      const subText = customization.message || eventConfig.dateText;
+      const nameText = customization.name ? customization.name : "HIPMI PT Telkom University Purwokerto";
+      const subText = customization.message || "PURWOKERTO, 2026";
 
-      this.drawFittedText(ctx, nameText, 80, footerY + 40, maxTextW, 26, '700', 'left', '#111111');
-      this.drawFittedText(ctx, subText, 80, footerY + 70, maxTextW, 16, '500', 'left', '#8E8E93');
+      this.drawFittedText(ctx, nameText, 80, footerY + 46, maxTextW, 40, '900', 'left', '#111111');
+      this.drawFittedText(ctx, subText, 80, footerY + 84, maxTextW, 24, '800', 'left', goldColor);
     }
   }
 

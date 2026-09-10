@@ -18,13 +18,13 @@ export const TEMPLATES = [
     header: {
       showLogo: true,
       height: 140,
-      title: "HIPMI TELKOM UNIVERSITY",
+      title: "HIPMI PT TELKOM PURWOKERTO",
       subtitle: "PHOTOBOOTH EXPERIENCE"
     },
     footer: {
       height: 140,
       showDualLogo: true,
-      text: "BANDUNG • INDONESIA",
+      text: "PURWOKERTO • INDONESIA",
       showDate: true
     },
     getSlots: (photoCount) => {
@@ -291,7 +291,7 @@ export const TEMPLATES = [
     footer: {
       height: 250,
       showDualLogo: true,
-      text: "HIPMI Telkom University",
+      text: "HIPMI PT Telkom University Purwokerto",
       showDate: true
     },
     getSlots: (photoCount) => {
@@ -370,9 +370,9 @@ export const TEMPLATES = [
 
   {
     id: "pkkmb-single",
-    name: "PKKMB Gold VIP Pass",
+    name: "PKKMB Purwokerto Gold VIP",
     category: "Event PKKMB",
-    description: "Official HIPMI PT Telkom University PKKMB 2026 luxury gold VIP frame (1 Photo Slot).",
+    description: "Official HIPMI PT Telkom University Purwokerto PKKMB 2026 luxury gold VIP frame (1 Photo Slot).",
     badge: "PKKMB 1-Slot",
     width: 688,
     height: 1222,
@@ -381,9 +381,9 @@ export const TEMPLATES = [
     accentColor: "#D4AF37",
     frameOverlay: "/assets/templates/frame-pkkmb-single.png",
     getSlots: (photoCount) => {
-      // Fixed 1 physical slot. Supports any session photoCount
+      // Fixed 1 physical slot matching the exact transparent cutout
       return [
-        { id: 0, x: 122, y: 210, width: 444, height: 712, borderRadius: 0, objectFit: "cover" }
+        { id: 0, x: 74, y: 220, width: 540, height: 740, borderRadius: 0, objectFit: "cover" }
       ];
     }
   }
