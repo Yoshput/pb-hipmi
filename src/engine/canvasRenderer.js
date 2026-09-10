@@ -210,6 +210,7 @@ class CanvasRenderer {
     // 2. Preload photos and brand logos
     const logoHipmiImg = await this.loadImage(eventConfig.logoHipmi || '/assets/logo-hipmi.png');
     const logoTeluImg = await this.loadImage(eventConfig.logoTelu || '/assets/logo-telu.png');
+    const frameOverlayImg = template.frameOverlay ? await this.loadImage(template.frameOverlay) : null;
 
     // Preload captured photos
     const loadedPhotos = await Promise.all(
@@ -221,13 +222,26 @@ class CanvasRenderer {
     const slots = template.getSlots(photoCount);
 
     slots.forEach((slot, idx) => {
-      const img = loadedPhotos[idx] || loadedPhotos[0];
+      // Circular fallback mapping: allows 3-slot frame to use 4-photo sessions, and 4-slot frame to use 3-photo sessions
+      const img = (loadedPhotos && loadedPhotos.length > 0)
+        ? (loadedPhotos[idx] || loadedPhotos[idx % loadedPhotos.length] || loadedPhotos[0])
+        : null;
 
       if (img) {
-        this.drawImageCover(ctx, img, slot.x, slot.y, slot.width, slot.height, slot.borderRadius);
+        // Bleed photos 4px behind frame overlay borders so no gap ever shows
+        const bleed = frameOverlayImg ? 4 : 0;
+        this.drawImageCover(
+          ctx,
+          img,
+          slot.x - bleed,
+          slot.y - bleed,
+          slot.width + (bleed * 2),
+          slot.height + (bleed * 2),
+          slot.borderRadius || 0
+        );
 
-        // Draw slot border if defined
-        if (slot.border) {
+        // Draw slot border if defined (skip if frameOverlay already frames the slot)
+        if (slot.border && !frameOverlayImg) {
           ctx.save();
           ctx.strokeStyle = slot.border.split(' ')[2] || template.accentColor;
           ctx.lineWidth = parseInt(slot.border.split(' ')[0], 10) || 1;
@@ -258,11 +272,16 @@ class CanvasRenderer {
       }
     });
 
-    // 4. Draw Header Branding & Typography
-    this._renderHeader(ctx, template, eventConfig, customization, logoHipmiImg, logoTeluImg, width);
+    // 3.5 Draw Frame Overlay on top of photos
+    if (frameOverlayImg) {
+      ctx.drawImage(frameOverlayImg, 0, 0, width, height);
+    }
 
-    // 5. Draw Footer Branding & Customization
-    this._renderFooter(ctx, template, eventConfig, customization, logoHipmiImg, logoTeluImg, width, height);
+    // 4. Draw Header Branding & Typography (skip for custom artistic frame overlays)
+    if (!frameOverlayImg) {
+      this._renderHeader(ctx, template, eventConfig, customization, logoHipmiImg, logoTeluImg, width);
+      this._renderFooter(ctx, template, eventConfig, customization, logoHipmiImg, logoTeluImg, width, height);
+    }
 
     return canvas;
   }

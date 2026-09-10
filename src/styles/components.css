@@ -142,6 +142,39 @@
   transform: scale(0.98);
 }
 
+.btn-secondary-dark,
+.btn-outline-white {
+  min-height: 50px;
+  padding: 0 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #FFFFFF !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.28);
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: var(--radius-pill);
+  transition: var(--transition-normal);
+  cursor: pointer;
+  text-decoration: none;
+  backdrop-filter: blur(8px);
+}
+
+.btn-secondary-dark:hover,
+.btn-outline-white:hover {
+  background-color: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.55);
+  color: #FFFFFF !important;
+  transform: translateY(-1px);
+}
+
+.btn-secondary-dark:active,
+.btn-outline-white:active {
+  transform: scale(0.98);
+}
+
 .btn-disabled, button:disabled {
   opacity: 0.5;
   pointer-events: none !important;

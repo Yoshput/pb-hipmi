@@ -321,6 +321,51 @@ export const TEMPLATES = [
         { id: 2, x: 615, y: 745, width: 505, height: 420, borderRadius: 2, objectFit: "cover", border: "1px solid #ECECEC" }
       ];
     }
+  },
+
+  {
+    id: "pkkmb-gold",
+    name: "PKKMB Gold Ticket",
+    category: "Event PKKMB",
+    description: "Official HIPMI PT Telkom Purwokerto PKKMB 2026 gold photostrip with ticket styling (4 Photo Slots).",
+    badge: "PKKMB 4-Slot",
+    width: 682,
+    height: 2048,
+    background: "#B89635",
+    textColor: "#FFFFFF",
+    accentColor: "#D4AF37",
+    frameOverlay: "/assets/templates/frame-pkkmb-gold.png",
+    getSlots: (photoCount) => {
+      // Fixed 4 physical slots. Supports any session photoCount with automatic circular fallback
+      return [
+        { id: 0, x: 114, y: 458, width: 454, height: 262, borderRadius: 0, objectFit: "cover" },
+        { id: 1, x: 114, y: 828, width: 454, height: 262, borderRadius: 0, objectFit: "cover" },
+        { id: 2, x: 112, y: 1196, width: 456, height: 262, borderRadius: 0, objectFit: "cover" },
+        { id: 3, x: 112, y: 1650, width: 456, height: 262, borderRadius: 0, objectFit: "cover" }
+      ];
+    }
+  },
+
+  {
+    id: "pkkmb-grunge",
+    name: "PKKMB Street Grunge",
+    category: "Event PKKMB",
+    description: "Bold pop-art stickers, camera, and cat graphics for HIPMI PT Telkom Purwokerto PKKMB 2026 (3 Photo Slots).",
+    badge: "PKKMB 3-Slot",
+    width: 682,
+    height: 2048,
+    background: "#0D0F12",
+    textColor: "#FFFFFF",
+    accentColor: "#FBBF24",
+    frameOverlay: "/assets/templates/frame-pkkmb-grunge.png",
+    getSlots: (photoCount) => {
+      // Fixed 3 physical slots. Supports any session photoCount with automatic circular fallback
+      return [
+        { id: 0, x: 108, y: 240, width: 546, height: 416, borderRadius: 0, objectFit: "cover" },
+        { id: 1, x: 42, y: 752, width: 546, height: 414, borderRadius: 0, objectFit: "cover" },
+        { id: 2, x: 108, y: 1262, width: 546, height: 414, borderRadius: 0, objectFit: "cover" }
+      ];
+    }
   }
 ];
 

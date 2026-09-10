@@ -177,9 +177,12 @@ describe('HIPMI Photobooth - Event Configuration Resilience', () => {
 });
 
 describe('HIPMI Photobooth - Template Layout Geometry & Bounds', () => {
-  it('all 6 templates are defined with required properties', () => {
-    assert.equal(TEMPLATES.length, 6);
-    const expectedIds = ['signature', 'bold', 'business', 'youth', 'strip', 'polaroid'];
+  it('all 8 templates are defined with required properties', () => {
+    assert.equal(TEMPLATES.length, 8);
+    const expectedIds = [
+      'signature', 'bold', 'business', 'youth', 'strip', 'polaroid',
+      'pkkmb-gold', 'pkkmb-grunge'
+    ];
     expectedIds.forEach(id => {
       const t = getTemplateById(id);
       assert.ok(t, `Template ${id} must exist`);
@@ -189,13 +192,19 @@ describe('HIPMI Photobooth - Template Layout Geometry & Bounds', () => {
     });
   });
 
-  it('all template slots for 1, 2, 3, and 4 photo counts fit inside canvas bounds without clipping', () => {
+  it('all template slots fit inside canvas bounds without clipping across photo counts', () => {
     const photoCounts = [1, 2, 3, 4];
 
     TEMPLATES.forEach(template => {
       photoCounts.forEach(count => {
         const slots = template.getSlots(count);
-        assert.equal(slots.length, count, `Template ${template.id} with photoCount=${count} must return exactly ${count} slots`);
+        if (template.id === 'pkkmb-gold') {
+          assert.equal(slots.length, 4, 'pkkmb-gold must always return 4 physical slots');
+        } else if (template.id === 'pkkmb-grunge') {
+          assert.equal(slots.length, 3, 'pkkmb-grunge must always return 3 physical slots');
+        } else {
+          assert.equal(slots.length, count, `Template ${template.id} with photoCount=${count} must return exactly ${count} slots`);
+        }
 
         slots.forEach((slot, idx) => {
           assert.ok(slot.width > 0, `Slot ${idx} width must be > 0`);

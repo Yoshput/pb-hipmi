@@ -399,93 +399,56 @@ class PhotoboothApp {
 
     if (displayPhotoUrl) {
       this.appEl.innerHTML = `
-        <div class="view-container view-enter" style="background: #0E0F12; color: #FFFFFF; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 28px 16px; text-align: center; min-height: 100vh; overflow-y: auto;">
-          <div style="margin-bottom: 20px; width: 100%; max-width: 440px;">
-            <img src="${this.eventConfig.logoHipmi}" alt="HIPMI" style="height: 52px; margin: 0 auto 10px; object-fit: contain;" />
-            <h2 style="font-size: 20px; font-weight: 800; color: var(--color-accent); margin-bottom: 4px;">${safeOrg}</h2>
-            <p style="font-size: 13px; color: #9E9EA7; margin-bottom: 8px;">${safeEvent}</p>
-            <div style="display: inline-block; padding: 4px 14px; border-radius: 9999px; background: rgba(200,168,75,0.15); border: 1px solid rgba(200,168,75,0.3); font-size: 11px; color: #EAD79B; font-weight: 700; letter-spacing: 0.5px;">
-              SESSION #${safeSessionId}
+        <div class="mobile-viewer-screen view-enter">
+          <div class="mobile-viewer-content">
+            <div class="mobile-viewer-header">
+              <img src="${this.eventConfig.logoHipmi}" alt="HIPMI" style="height: 52px; margin: 0 auto 10px; object-fit: contain;" />
+              <h2 style="font-size: 20px; font-weight: 800; color: var(--color-accent); margin-bottom: 4px;">${safeOrg}</h2>
+              <p style="font-size: 13px; color: #9E9EA7; margin-bottom: 8px;">${safeEvent}</p>
+              <div style="display: inline-block; padding: 4px 14px; border-radius: 9999px; background: rgba(200,168,75,0.15); border: 1px solid rgba(200,168,75,0.3); font-size: 11px; color: #EAD79B; font-weight: 700; letter-spacing: 0.5px;">
+                SESSION #${safeSessionId}
+              </div>
+            </div>
+
+            <!-- Hero Image Card (Full Aspect Ratio, Never Clipped) -->
+            <div class="mobile-viewer-card">
+              <img src="${displayPhotoUrl}" alt="Photobooth Memory" id="mobile-photo-img" />
+            </div>
+
+            <!-- Mobile Action Buttons -->
+            <div class="mobile-viewer-actions">
+              <a href="${displayPhotoUrl}" download="hipmi-photobooth-${safeSessionId}.png" target="_blank" class="btn-primary btn-accent" id="btn-mobile-download" style="width: 100%; min-height: 54px; font-size: 16px; font-weight: 800; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 10px;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Download Foto HD
+              </a>
+            </div>
+
+            <!-- Tips Card -->
+            <div class="mobile-viewer-tips" style="margin-bottom: 36px;">
+              <p style="font-size: 12px; color: #A0A0AA; line-height: 1.5; margin: 0;">
+                💡 <strong>Tips iPhone / Android:</strong> Tekan dan tahan foto di atas, lalu pilih <em>"Simpan Gambar"</em> atau <em>"Save to Photos"</em> untuk langsung tersimpan di galeri kamera HP kamu.
+              </p>
             </div>
           </div>
-
-          <!-- Hero Image Card -->
-          <div style="max-width: 440px; width: 100%; border-radius: 12px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.6); margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.15); background: #14161B;">
-            <img src="${displayPhotoUrl}" alt="Photobooth Memory" style="width: 100%; height: auto; display: block;" id="mobile-photo-img" />
-          </div>
-
-          <!-- Mobile Action Buttons -->
-          <div style="width: 100%; max-width: 440px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
-            <a href="${displayPhotoUrl}" download="hipmi-photobooth-${safeSessionId}.png" target="_blank" class="btn-primary btn-accent" id="btn-mobile-download" style="width: 100%; min-height: 52px; font-size: 15px; font-weight: 800; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <polyline points="7 10 12 15 17 10"></polyline>
-                <line x1="12" y1="15" x2="12" y2="3"></line>
-              </svg>
-              Download Foto HD
-            </a>
-
-            <button type="button" class="btn-secondary" id="btn-mobile-share" style="width: 100%; min-height: 48px; font-size: 14px; font-weight: 700; color: #FFFFFF; border-color: rgba(255,255,255,0.25); display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <circle cx="18" cy="5" r="3"></circle>
-                <circle cx="6" cy="12" r="3"></circle>
-                <circle cx="18" cy="19" r="3"></circle>
-                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-              </svg>
-              Bagikan / Simpan ke Galeri
-            </button>
-          </div>
-
-          <!-- Tips Card -->
-          <div style="max-width: 440px; width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 14px; margin-bottom: 24px; text-align: left;">
-            <p style="font-size: 12px; color: #A0A0AA; line-height: 1.5; margin: 0;">
-              💡 <strong>Tips iPhone / Android:</strong> Tekan dan tahan foto di atas, lalu pilih <em>"Simpan Gambar"</em> atau <em>"Save to Photos"</em> untuk langsung tersimpan di galeri kamera HP kamu.
-            </p>
-          </div>
-
-          <a href="/" class="btn-secondary" style="background: transparent; color: #6E6E73; border-color: transparent; font-size: 13px; text-decoration: underline;">
-            Masuk ke Booth Experience
-          </a>
         </div>
       `;
-
-      // Bind Web Share API
-      const shareBtn = this.appEl.querySelector('#btn-mobile-share');
-      if (shareBtn) {
-        shareBtn.addEventListener('click', async () => {
-          if (navigator.share) {
-            try {
-              await navigator.share({
-                title: `${this.eventConfig.organization} Photobooth`,
-                text: `Kenangan foto saya di ${this.eventConfig.eventName}`,
-                url: displayPhotoUrl
-              });
-            } catch (err) {
-              // User cancelled or share dismissed
-            }
-          } else {
-            try {
-              await navigator.clipboard.writeText(displayPhotoUrl);
-              alert('Tautan foto berhasil disalin ke clipboard!');
-            } catch (e) {
-              window.open(displayPhotoUrl, '_blank');
-            }
-          }
-        });
-      }
     } else {
       this.appEl.innerHTML = `
-        <div class="view-container view-enter" style="background: #0E0F12; color: #FFFFFF; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 24px; text-align: center; min-height: 100vh;">
-          <div style="margin-bottom: 24px;">
-            <img src="${this.eventConfig.logoHipmi}" alt="HIPMI" style="height: 64px; margin: 0 auto 16px;" />
-            <h2 style="font-size: 22px; font-weight: 800; color: var(--color-accent); margin-bottom: 6px;">${safeOrg}</h2>
-            <div style="display: inline-block; padding: 4px 12px; border-radius: 9999px; background: rgba(200,168,75,0.15); border: 1px solid rgba(200,168,75,0.3); font-size: 12px; color: #EAD79B; font-weight: 700;">
-              SESSION ${safeSessionId}
+        <div class="mobile-viewer-screen view-enter" style="justify-content: center;">
+          <div class="mobile-viewer-content">
+            <div class="mobile-viewer-header">
+              <img src="${this.eventConfig.logoHipmi}" alt="HIPMI" style="height: 64px; margin: 0 auto 16px;" />
+              <h2 style="font-size: 22px; font-weight: 800; color: var(--color-accent); margin-bottom: 6px;">${safeOrg}</h2>
+              <div style="display: inline-block; padding: 4px 12px; border-radius: 9999px; background: rgba(200,168,75,0.15); border: 1px solid rgba(200,168,75,0.3); font-size: 12px; color: #EAD79B; font-weight: 700;">
+                SESSION ${safeSessionId}
+              </div>
             </div>
-          </div>
 
-          <div style="max-width: 420px; background: #14161B; border: 1px solid #242730; border-radius: 16px; padding: 28px 24px; margin-bottom: 28px; box-shadow: 0 16px 40px rgba(0,0,0,0.4);">
+            <div style="width: 100%; max-width: 420px; background: #14161B; border: 1px solid #242730; border-radius: 16px; padding: 28px 24px; margin-bottom: 28px; box-shadow: 0 16px 40px rgba(0,0,0,0.4); flex-shrink: 0;">
             <div style="width: 52px; height: 52px; border-radius: 50%; background: rgba(200,168,75,0.15); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: var(--color-accent);">
               <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
@@ -494,14 +457,10 @@ class PhotoboothApp {
               </svg>
             </div>
             <h3 style="font-size: 17px; font-weight: 700; color: #FFFFFF; margin-bottom: 8px;">Event Station Photobooth</h3>
-            <p style="font-size: 14px; color: #9E9EA7; line-height: 1.5;">
+            <p style="font-size: 14px; color: #9E9EA7; line-height: 1.5; margin: 0;">
               Foto beresolusi tinggi kamu diproses di layar monitor booth. Silakan unduh langsung dari layar booth atau hubungi operator.
             </p>
           </div>
-
-          <a href="/" class="btn-primary btn-accent" style="padding: 0 32px; font-size: 15px;">
-            Masuk ke Booth Experience
-          </a>
         </div>
       `;
     }

@@ -390,8 +390,13 @@ export class HistoryModal {
         </p>
 
         <div style="display: flex; gap: 8px; width: 100%;">
-          <a href="${qrUrl}" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="flex: 1; min-height: 42px; font-size: 13px; color: #FFFFFF; border-color: rgba(255,255,255,0.25);">
-            Buka Tautan
+          <a href="${qrUrl}" target="_blank" rel="noopener noreferrer" class="btn-secondary-dark" style="flex: 1; min-height: 44px; font-size: 13px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+            Buka Tautan Foto
           </a>
         </div>
       </div>
