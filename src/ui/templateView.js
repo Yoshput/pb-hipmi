@@ -51,8 +51,8 @@ export class TemplateView {
     // Auto-select best matching template for this layout if default signature
     if (!this.selectedTemplateId || this.selectedTemplateId === 'signature') {
       if (photoCount === 1) this.selectedTemplateId = 'pkkmb-single';
-      else if (photoCount === 3) this.selectedTemplateId = 'pkkmb-grunge';
-      else if (photoCount === 4) this.selectedTemplateId = 'pkkmb-gold';
+      else if (photoCount === 3) this.selectedTemplateId = 'newspaper';
+      else if (photoCount === 4) this.selectedTemplateId = 'photoism-dark';
     }
 
     // Smart ordering: put the most tailored templates for this photo count at the top
@@ -66,6 +66,8 @@ export class TemplateView {
           if (t.id === 'pkkmb-grunge') return 10;
           if (t.id === 'strip' || t.id === 'youth') return 5;
         } else if (photoCount === 4) {
+          if (t.id === 'photoism-dark') return 12;
+          if (t.id === 'breaking-news') return 11;
           if (t.id === 'pkkmb-gold') return 10;
           if (t.id === 'signature' || t.id === 'bold') return 5;
         }
@@ -79,7 +81,7 @@ export class TemplateView {
       const isActive = t.id === this.selectedTemplateId;
       const isTopMatch = (photoCount === 1 && t.id === 'pkkmb-single') ||
                          (photoCount === 3 && (t.id === 'newspaper' || t.id === 'pkkmb-grunge')) ||
-                         (photoCount === 4 && t.id === 'pkkmb-gold');
+                         (photoCount === 4 && (t.id === 'photoism-dark' || t.id === 'breaking-news' || t.id === 'pkkmb-gold'));
       const badgeText = isTopMatch ? `★ BEST FOR ${photoCount} FOTO` : (t.badge || t.category);
 
       templatesHtml += `

@@ -177,11 +177,12 @@ describe('HIPMI Photobooth - Event Configuration Resilience', () => {
 });
 
 describe('HIPMI Photobooth - Template Layout Geometry & Bounds', () => {
-  it('all 10 templates are defined with required properties', () => {
-    assert.equal(TEMPLATES.length, 10);
+  it('all 12 templates are defined with required properties', () => {
+    assert.equal(TEMPLATES.length, 12);
     const expectedIds = [
       'signature', 'bold', 'business', 'youth', 'strip', 'polaroid',
-      'pkkmb-gold', 'pkkmb-grunge', 'pkkmb-single', 'newspaper'
+      'pkkmb-gold', 'pkkmb-grunge', 'pkkmb-single', 'newspaper',
+      'breaking-news', 'photoism-dark'
     ];
     expectedIds.forEach(id => {
       const t = getTemplateById(id);
@@ -198,14 +199,12 @@ describe('HIPMI Photobooth - Template Layout Geometry & Bounds', () => {
     TEMPLATES.forEach(template => {
       photoCounts.forEach(count => {
         const slots = template.getSlots(count);
-        if (template.id === 'pkkmb-gold') {
-          assert.equal(slots.length, 4, 'pkkmb-gold must always return 4 physical slots');
-        } else if (template.id === 'pkkmb-grunge') {
-          assert.equal(slots.length, 3, 'pkkmb-grunge must always return 3 physical slots');
+        if (template.id === 'pkkmb-gold' || template.id === 'breaking-news' || template.id === 'photoism-dark') {
+          assert.equal(slots.length, 4, `${template.id} must always return 4 physical slots`);
+        } else if (template.id === 'pkkmb-grunge' || template.id === 'newspaper') {
+          assert.equal(slots.length, 3, `${template.id} must always return 3 physical slots`);
         } else if (template.id === 'pkkmb-single') {
           assert.equal(slots.length, 1, 'pkkmb-single must always return 1 physical slot');
-        } else if (template.id === 'newspaper') {
-          assert.equal(slots.length, 3, 'newspaper must always return 3 physical slots');
         } else {
           assert.equal(slots.length, count, `Template ${template.id} with photoCount=${count} must return exactly ${count} slots`);
         }

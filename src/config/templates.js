@@ -408,6 +408,52 @@ export const TEMPLATES = [
         { id: 2, x: 74, y: 1258, width: 400, height: 270, borderRadius: 0, objectFit: "cover" }
       ];
     }
+  },
+
+  {
+    id: "breaking-news",
+    name: "Breaking News Gazette",
+    category: "Editorial",
+    description: "Vintage breaking news newspaper photostrip with stamped headlines and bold story layout (4 Photo Slots).",
+    badge: "News 4-Slot",
+    width: 682,
+    height: 2048,
+    background: "#F5F2EB",
+    textColor: "#1A1A1A",
+    accentColor: "#1A1A1A",
+    frameOverlay: "/assets/templates/frame-breaking-news.png",
+    getSlots: (photoCount) => {
+      // Fixed 4 physical vertical slots
+      return [
+        { id: 0, x: 56, y: 356, width: 570, height: 370, borderRadius: 0, objectFit: "cover" },
+        { id: 1, x: 56, y: 750, width: 570, height: 370, borderRadius: 0, objectFit: "cover" },
+        { id: 2, x: 56, y: 1144, width: 570, height: 370, borderRadius: 0, objectFit: "cover" },
+        { id: 3, x: 56, y: 1538, width: 570, height: 370, borderRadius: 0, objectFit: "cover" }
+      ];
+    }
+  },
+
+  {
+    id: "photoism-dark",
+    name: "Today's Photoism Dark",
+    category: "Photobooth",
+    description: "Sleek Korean dark minimalist photostrip with TODAY'S header & HIPMI typography (4 Photo Slots).",
+    badge: "Photoism 4-Slot",
+    width: 682,
+    height: 2048,
+    background: "#18181A",
+    textColor: "#FFFFFF",
+    accentColor: "#FFFFFF",
+    frameOverlay: "/assets/templates/frame-photoism-dark.png",
+    getSlots: (photoCount) => {
+      // Fixed 4 physical vertical slots
+      return [
+        { id: 0, x: 64, y: 140, width: 554, height: 410, borderRadius: 0, objectFit: "cover" },
+        { id: 1, x: 64, y: 574, width: 554, height: 410, borderRadius: 0, objectFit: "cover" },
+        { id: 2, x: 64, y: 1008, width: 554, height: 410, borderRadius: 0, objectFit: "cover" },
+        { id: 3, x: 64, y: 1442, width: 554, height: 410, borderRadius: 0, objectFit: "cover" }
+      ];
+    }
   }
 ];
 
