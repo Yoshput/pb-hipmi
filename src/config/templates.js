@@ -386,6 +386,28 @@ export const TEMPLATES = [
         { id: 0, x: 64, y: 215, width: 560, height: 755, borderRadius: 0, objectFit: "cover" }
       ];
     }
+  },
+
+  {
+    id: "newspaper",
+    name: "Today's Newspaper",
+    category: "Editorial",
+    description: "Vintage aesthetic newspaper editorial with bold headlines & youth entrepreneurship articles (3 Photo Slots).",
+    badge: "Newspaper 3-Slot",
+    width: 1200,
+    height: 1700,
+    background: "#FFFFFF",
+    textColor: "#111111",
+    accentColor: "#111111",
+    frameOverlay: "/assets/templates/frame-newspaper.png",
+    getSlots: (photoCount) => {
+      // 3 asymmetrically laid out editorial slots
+      return [
+        { id: 0, x: 74, y: 270, width: 1052, height: 550, borderRadius: 0, objectFit: "cover" },
+        { id: 1, x: 443, y: 844, width: 683, height: 390, borderRadius: 0, objectFit: "cover" },
+        { id: 2, x: 74, y: 1258, width: 390, height: 265, borderRadius: 0, objectFit: "cover" }
+      ];
+    }
   }
 ];
 

@@ -62,6 +62,7 @@ export class TemplateView {
           if (t.id === 'pkkmb-single') return 10;
           if (t.id === 'polaroid' || t.id === 'signature') return 5;
         } else if (photoCount === 3) {
+          if (t.id === 'newspaper') return 12;
           if (t.id === 'pkkmb-grunge') return 10;
           if (t.id === 'strip' || t.id === 'youth') return 5;
         } else if (photoCount === 4) {
@@ -77,7 +78,7 @@ export class TemplateView {
     sortedTemplates.forEach(t => {
       const isActive = t.id === this.selectedTemplateId;
       const isTopMatch = (photoCount === 1 && t.id === 'pkkmb-single') ||
-                         (photoCount === 3 && t.id === 'pkkmb-grunge') ||
+                         (photoCount === 3 && (t.id === 'newspaper' || t.id === 'pkkmb-grunge')) ||
                          (photoCount === 4 && t.id === 'pkkmb-gold');
       const badgeText = isTopMatch ? `★ BEST FOR ${photoCount} FOTO` : (t.badge || t.category);
 
