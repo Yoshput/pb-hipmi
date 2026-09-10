@@ -1,0 +1,52 @@
+:root {
+  /* Brand Colors */
+  --color-bg: #FFFFFF;
+  --color-bg-alt: #F9F9FB;
+  --color-surface: #FFFFFF;
+  --color-primary: #111111;
+  --color-secondary: #6B6B6B;
+  --color-muted: #F5F5F5;
+  --color-border: #E8E8E8;
+  --color-border-hover: #D1D1D6;
+  
+  /* Official HIPMI Gold Accents */
+  --color-accent: #C8A84B;
+  --color-accent-hover: #B89738;
+  --color-accent-dark: #A88A30;
+  --color-accent-light: #F9F4E5;
+  --color-accent-glow: rgba(200, 168, 75, 0.25);
+
+  /* Dark Theme / Booth Mode */
+  --booth-bg: #090A0C;
+  --booth-surface: #131519;
+  --booth-surface-border: #242730;
+  --booth-text: #FFFFFF;
+  --booth-text-muted: #8E8E93;
+
+  /* Typography */
+  --font-sans: -apple-system, BlinkMacSystemFont, "Inter", "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+  --font-mono: "SF Mono", "Consolas", monospace;
+
+  /* Spacing */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-pill: 9999px;
+
+  /* Transitions */
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: 150ms var(--ease-smooth);
+  --transition-normal: 250ms var(--ease-smooth);
+
+  /* Touch Target */
+  --min-touch-target: 48px;
+}
