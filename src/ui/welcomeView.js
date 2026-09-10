@@ -14,7 +14,7 @@ export class WelcomeView {
 
   render() {
     const div = document.createElement('div');
-    div.className = 'view-container view-enter';
+    div.className = 'view-container welcome-view view-enter';
     this.container = div;
 
     const orgName = escapeHtml(this.eventConfig.organization);

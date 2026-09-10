@@ -507,26 +507,51 @@ class PhotoboothApp {
         }
       }
 
-      // 1-Tap HD Download Button with Blob fallback
+      // 1-Tap HD Download Button with multi-tier mobile download fallback
       const dlBtn = this.appEl.querySelector('#btn-mobile-download');
       if (dlBtn) {
         dlBtn.addEventListener('click', async (e) => {
           e.preventDefault();
           const originalContent = dlBtn.innerHTML;
-          dlBtn.innerHTML = `<span>⏳ Mengunduh Foto...</span>`;
+          dlBtn.innerHTML = `<span>⏳ Mengunduh Foto HD...</span>`;
           dlBtn.disabled = true;
 
           try {
-            const res = await fetch(finalUrl);
-            const blob = await res.blob();
-            const objUrl = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = objUrl;
-            a.download = `hipmi-telkom-purwokerto-${safeSessionId}.png`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            setTimeout(() => URL.revokeObjectURL(objUrl), 1500);
+            const proxyDownloadUrl = `/api/upload?download=1&session=${encodeURIComponent(safeSessionId)}&url=${encodeURIComponent(finalUrl)}`;
+            
+            // Tier 1: Fetch via proxy or direct
+            let blob = null;
+            if (finalUrl.startsWith('data:')) {
+              const res = await fetch(finalUrl);
+              blob = await res.blob();
+            } else {
+              try {
+                const proxyRes = await fetch(proxyDownloadUrl);
+                if (proxyRes.ok) {
+                  blob = await proxyRes.blob();
+                }
+              } catch (_) {
+                // Direct fetch fallback
+                try {
+                  const directRes = await fetch(finalUrl);
+                  if (directRes.ok) blob = await directRes.blob();
+                } catch (__) {}
+              }
+            }
+
+            if (blob) {
+              const objUrl = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = objUrl;
+              a.download = `hipmi-telkom-purwokerto-${safeSessionId}.png`;
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+              setTimeout(() => URL.revokeObjectURL(objUrl), 2500);
+            } else {
+              // Tier 2: Direct browser attachment download
+              window.location.href = proxyDownloadUrl;
+            }
 
             dlBtn.innerHTML = `<span>✅ Foto Berhasil Disimpan!</span>`;
             setTimeout(() => {
@@ -534,7 +559,7 @@ class PhotoboothApp {
               dlBtn.disabled = false;
             }, 2500);
           } catch (err) {
-            // Fallback: direct window open
+            // Tier 3: Direct window open fallback
             window.open(finalUrl, '_blank');
             dlBtn.innerHTML = originalContent;
             dlBtn.disabled = false;
@@ -587,8 +612,8 @@ class PhotoboothApp {
         const res = await fetch(`/api/upload?session=${encodeURIComponent(sessionId)}`);
         if (res.ok) {
           const data = await res.json();
-          if (data?.success && data?.url) {
-            showPhotoView(data.url);
+          if (data?.success && (data?.dataUrl || data?.url)) {
+            showPhotoView(data.dataUrl || data.url);
             return;
           }
         }
