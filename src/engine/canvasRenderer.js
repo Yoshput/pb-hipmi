@@ -281,13 +281,15 @@ class CanvasRenderer {
       }
     });
 
+    const hasValidOverlay = Boolean(frameOverlayImg && (frameOverlayImg.naturalWidth > 1 || frameOverlayImg.width > 1));
+
     // 3.5 Draw Frame Overlay on top of photos
-    if (frameOverlayImg) {
+    if (hasValidOverlay) {
       ctx.drawImage(frameOverlayImg, 0, 0, width, height);
     }
 
-    // 4. Draw Header Branding & Typography (skip for custom artistic frame overlays)
-    if (!frameOverlayImg) {
+    // 4. Draw Header Branding & Typography (skip only when artistic frameOverlay exists and is valid)
+    if (!hasValidOverlay) {
       this._renderHeader(ctx, template, eventConfig, customization, logoHipmiImg, logoTeluImg, width);
       this._renderFooter(ctx, template, eventConfig, customization, logoHipmiImg, logoTeluImg, width, height);
     }

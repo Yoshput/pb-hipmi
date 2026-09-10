@@ -108,7 +108,8 @@ export class OperatorModal {
             <label class="form-label" for="cfg-auto-reset">Result Auto-Reset Duration</label>
             <select id="cfg-auto-reset" class="form-select">
               <option value="10" ${this.eventConfig.autoResetSeconds === 10 ? 'selected' : ''}>10 Seconds</option>
-              <option value="15" ${this.eventConfig.autoResetSeconds === 15 ? 'selected' : ''}>15 Seconds (Default)</option>
+              <option value="15" ${this.eventConfig.autoResetSeconds === 15 ? 'selected' : ''}>15 Seconds</option>
+              <option value="20" ${this.eventConfig.autoResetSeconds === 20 ? 'selected' : ''}>20 Seconds (Default)</option>
               <option value="30" ${this.eventConfig.autoResetSeconds === 30 ? 'selected' : ''}>30 Seconds</option>
               <option value="0" ${this.eventConfig.autoResetSeconds === 0 ? 'selected' : ''}>Disabled (Manual Only)</option>
             </select>

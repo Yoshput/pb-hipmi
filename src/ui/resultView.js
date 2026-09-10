@@ -30,7 +30,7 @@ export class ResultView {
     this.uploadedUrl = '';
 
     this.container = null;
-    this.autoResetDuration = Number.isInteger(eventConfig.autoResetSeconds) ? eventConfig.autoResetSeconds : 15;
+    this.autoResetDuration = Number.isInteger(eventConfig.autoResetSeconds) ? eventConfig.autoResetSeconds : 20;
     this.remainingSeconds = this.autoResetDuration;
     this.resetTimer = null;
     this.isResetting = false;

@@ -44,7 +44,7 @@ class PhotoboothApp {
     const actionParam = urlParams.get('action');
     const photoParam = urlParams.get('photo');
 
-    if (sessionParam && (actionParam === 'view' || actionParam === 'download')) {
+    if (sessionParam) {
       this.renderMobileViewer(sessionParam, photoParam);
       return;
     }
@@ -424,7 +424,7 @@ class PhotoboothApp {
     // 1. Check in-memory session if on same booth device
     if (!displayPhotoUrl) {
       const session = sessionManager.getSession();
-      if (session && session.finalDataUrl && session.sessionId === sessionId) {
+      if (session && session.finalDataUrl && (session.sessionId === sessionId || sessionId === 'HIPMI' || sessionId === 'latest')) {
         displayPhotoUrl = session.finalDataUrl;
       }
     }
@@ -432,7 +432,13 @@ class PhotoboothApp {
     // 2. Check local IndexedDB history
     if (!displayPhotoUrl) {
       try {
-        const historyItem = await historyStorage.getById(sessionId);
+        let historyItem = await historyStorage.getById(sessionId);
+        if (!historyItem && (sessionId === 'HIPMI' || sessionId === 'latest' || sessionId.startsWith('HIPMI'))) {
+          const recentList = await historyStorage.getRecent(1);
+          if (recentList && recentList.length > 0) {
+            historyItem = recentList[0];
+          }
+        }
         if (historyItem) {
           displayPhotoUrl = historyItem.uploadedUrl || historyItem.finalDataUrl;
         }

@@ -30,7 +30,7 @@ export const defaultEventConfig = {
   // Operational Settings
   photoCount: 4, // Default: 4 (supports 1, 2, 3, 4)
   countdownSeconds: 3, // 3 -> 2 -> 1 -> Flash
-  autoResetSeconds: 15, // Return to welcome after 15s inactivity
+  autoResetSeconds: 20, // Return to welcome after 20s QR scan time (user requested)
   shutterSoundEnabled: true,
   mirrorCamera: true, // Default mirror for selfie perspective
   selectedCameraId: "", // Empty = auto/default
@@ -62,6 +62,10 @@ export function loadEventConfig() {
         let dt = typeof parsed.dateText === 'string' && parsed.dateText.trim() ? parsed.dateText.trim() : defaultEventConfig.dateText;
         if (dt.toUpperCase().includes('BANDUNG')) dt = defaultEventConfig.dateText;
 
+        // Migrate autoResetSeconds: upgrade old 15s default to 20s
+        let resetSec = Number.isInteger(parsed.autoResetSeconds) && parsed.autoResetSeconds >= 0 && parsed.autoResetSeconds <= 120 ? parsed.autoResetSeconds : defaultEventConfig.autoResetSeconds;
+        if (resetSec === 15) resetSec = 20;
+
         // Migrate cloudProvider: if previously 'none' without any custom config, upgrade to 'auto'
         let provider = 'auto';
         if (['auto', 'imgbb', 'custom'].includes(parsed.cloudProvider)) {
@@ -85,7 +89,7 @@ export function loadEventConfig() {
           dateText: dt,
           photoCount: Number.isInteger(parsed.photoCount) && parsed.photoCount >= 1 && parsed.photoCount <= 6 ? parsed.photoCount : defaultEventConfig.photoCount,
           countdownSeconds: Number.isInteger(parsed.countdownSeconds) && parsed.countdownSeconds >= 1 && parsed.countdownSeconds <= 10 ? parsed.countdownSeconds : defaultEventConfig.countdownSeconds,
-          autoResetSeconds: Number.isInteger(parsed.autoResetSeconds) && parsed.autoResetSeconds >= 0 && parsed.autoResetSeconds <= 120 ? parsed.autoResetSeconds : defaultEventConfig.autoResetSeconds,
+          autoResetSeconds: resetSec,
           mirrorCamera: typeof parsed.mirrorCamera === 'boolean' ? parsed.mirrorCamera : true,
           selectedCameraId: typeof parsed.selectedCameraId === 'string' ? parsed.selectedCameraId : "",
           hostingUrl: typeof parsed.hostingUrl === 'string' ? parsed.hostingUrl.trim() : "",

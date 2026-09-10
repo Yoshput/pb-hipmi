@@ -36,11 +36,21 @@ export default async function handler(req, res) {
       return res.status(400).json({ success: false, error: 'Session ID diperlukan.' });
     }
 
-    const cached = globalThis._hipmiRecentUploads.get(sessionId);
+    let cached = globalThis._hipmiRecentUploads.get(sessionId);
+
+    // If exact sessionId not found, and requested session is 'HIPMI' or 'latest', find the most recent upload
+    if (!cached && (sessionId === 'HIPMI' || sessionId === 'latest' || sessionId.startsWith('HIPMI-') || sessionId.startsWith('HIPMI'))) {
+      if (globalThis._hipmiRecentUploads.size > 0) {
+        const items = Array.from(globalThis._hipmiRecentUploads.values());
+        items.sort((a, b) => b.time - a.time);
+        cached = items[0];
+      }
+    }
+
     if (cached && cached.url) {
       return res.status(200).json({
         success: true,
-        sessionId,
+        sessionId: cached.sessionId || sessionId,
         url: cached.url,
         uploadedAt: cached.time
       });
@@ -166,6 +176,7 @@ function saveUploadCache(sessionId, url) {
     globalThis._hipmiRecentUploads = new Map();
   }
   globalThis._hipmiRecentUploads.set(sessionId, {
+    sessionId,
     url,
     time: Date.now()
   });

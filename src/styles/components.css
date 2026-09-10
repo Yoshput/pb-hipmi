@@ -233,35 +233,95 @@
 
 .framing-guide {
   position: absolute;
-  inset: 10% 15%;
-  border: 1px dashed rgba(255, 255, 255, 0.25);
-  border-radius: 20px;
   pointer-events: none;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 15;
+  transition: all 0.3s ease;
+}
+
+/* 1 Foto (Solo VIP: ~3:4 Portrait) */
+.framing-guide.framing-guide-slots-1 {
+  aspect-ratio: 3 / 4;
+  height: 84%;
+  max-height: calc(100vh - 120px);
+  width: auto;
+  border: 2px dashed rgba(200, 168, 75, 0.8);
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.48);
+  border-radius: 16px;
+}
+
+/* 3 Foto (Trio Strip: ~4:3 Landscape) */
+.framing-guide.framing-guide-slots-3 {
+  aspect-ratio: 4 / 3;
+  width: 76%;
+  max-width: calc(100vh * 1.15);
+  height: auto;
+  border: 2px dashed rgba(200, 168, 75, 0.8);
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.48);
+  border-radius: 16px;
+}
+
+/* 4 Foto (Classic/Ticket: ~16:9 Wide) */
+.framing-guide.framing-guide-slots-4 {
+  aspect-ratio: 16 / 9;
+  width: 85%;
+  max-width: calc(100vh * 1.4);
+  height: auto;
+  border: 2px dashed rgba(200, 168, 75, 0.8);
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.48);
+  border-radius: 16px;
+}
+
+/* Default / Fallback */
+.framing-guide:not([class*="framing-guide-slots-"]) {
+  inset: 10% 15%;
+  border: 2px dashed rgba(200, 168, 75, 0.8);
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.48);
+  border-radius: 16px;
+}
+
+/* Framing Pose Hint Pill */
+.framing-hint-pill {
+  position: absolute;
+  bottom: 16px;
+  background: rgba(14, 16, 20, 0.9);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--color-accent);
+  color: var(--color-accent);
+  font-size: 12px;
+  font-weight: 800;
+  padding: 6px 18px;
+  border-radius: var(--radius-pill);
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 /* Corner bracket markers */
 .corner-bracket {
   position: absolute;
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   border-color: var(--color-accent);
   border-style: solid;
   pointer-events: none;
+  filter: drop-shadow(0 0 4px rgba(200, 168, 75, 0.5));
 }
 
-.corner-tl { top: -1px; left: -1px; border-width: 3px 0 0 3px; border-top-left-radius: 8px; }
-.corner-tr { top: -1px; right: -1px; border-width: 3px 3px 0 0; border-top-right-radius: 8px; }
-.corner-bl { bottom: -1px; left: -1px; border-width: 0 0 3px 3px; border-bottom-left-radius: 8px; }
-.corner-br { bottom: -1px; right: -1px; border-width: 0 3px 3px 0; border-bottom-right-radius: 8px; }
+.corner-tl { top: -2px; left: -2px; border-width: 4px 0 0 4px; border-top-left-radius: 10px; }
+.corner-tr { top: -2px; right: -2px; border-width: 4px 4px 0 0; border-top-right-radius: 10px; }
+.corner-bl { bottom: -2px; left: -2px; border-width: 0 0 4px 4px; border-bottom-left-radius: 10px; }
+.corner-br { bottom: -2px; right: -2px; border-width: 0 4px 4px 0; border-bottom-right-radius: 10px; }
 
 /* Subtle head target oval */
 .face-target {
-  width: 180px;
-  height: 240px;
-  border: 1px dashed rgba(200, 168, 75, 0.3);
+  width: 170px;
+  height: 230px;
+  border: 1.5px dashed rgba(200, 168, 75, 0.35);
   border-radius: 50%;
   pointer-events: none;
 }

@@ -381,9 +381,9 @@ export const TEMPLATES = [
     accentColor: "#D4AF37",
     frameOverlay: "/assets/templates/frame-pkkmb-single.png",
     getSlots: (photoCount) => {
-      // Fixed 1 physical slot matching the exact transparent cutout
+      // Fixed 1 physical slot matching the exact transparent cutout (560x755, ~3:4 aspect)
       return [
-        { id: 0, x: 74, y: 220, width: 540, height: 740, borderRadius: 0, objectFit: "cover" }
+        { id: 0, x: 64, y: 215, width: 560, height: 755, borderRadius: 0, objectFit: "cover" }
       ];
     }
   }

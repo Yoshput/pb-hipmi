@@ -61,13 +61,16 @@ export class CameraView {
       <div class="camera-container">
         <video class="camera-video" id="camera-feed" autoplay playsinline muted></video>
 
-        <!-- Framing Guide & Safe Zone -->
-        <div class="framing-guide" id="framing-guide">
+        <!-- Framing Guide & Safe Zone with Layout-Aware Aspect Mask -->
+        <div class="framing-guide framing-guide-slots-${this.totalSlots}" id="framing-guide">
           <div class="corner-bracket corner-tl"></div>
           <div class="corner-bracket corner-tr"></div>
           <div class="corner-bracket corner-bl"></div>
           <div class="corner-bracket corner-br"></div>
           <div class="face-target"></div>
+          <div class="framing-hint-pill">
+            ${this.totalSlots === 1 ? '👑 AREA FOTO 1 SOLO VIP' : this.totalSlots === 3 ? '📸 AREA FOTO 3 STRIP' : '🎞️ AREA FOTO 4 CLASSIC'}
+          </div>
         </div>
 
         <!-- Photo Counter Pill -->
