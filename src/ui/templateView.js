@@ -46,12 +46,44 @@ export class TemplateView {
     div.className = 'view-container view-enter template-screen';
     this.container = div;
 
+    const photoCount = this.photos.length || 4;
+
+    // Auto-select best matching template for this layout if default signature
+    if (!this.selectedTemplateId || this.selectedTemplateId === 'signature') {
+      if (photoCount === 1) this.selectedTemplateId = 'pkkmb-single';
+      else if (photoCount === 3) this.selectedTemplateId = 'pkkmb-grunge';
+      else if (photoCount === 4) this.selectedTemplateId = 'pkkmb-gold';
+    }
+
+    // Smart ordering: put the most tailored templates for this photo count at the top
+    const sortedTemplates = [...TEMPLATES].sort((a, b) => {
+      const getPriority = (t) => {
+        if (photoCount === 1) {
+          if (t.id === 'pkkmb-single') return 10;
+          if (t.id === 'polaroid' || t.id === 'signature') return 5;
+        } else if (photoCount === 3) {
+          if (t.id === 'pkkmb-grunge') return 10;
+          if (t.id === 'strip' || t.id === 'youth') return 5;
+        } else if (photoCount === 4) {
+          if (t.id === 'pkkmb-gold') return 10;
+          if (t.id === 'signature' || t.id === 'bold') return 5;
+        }
+        return 0;
+      };
+      return getPriority(b) - getPriority(a);
+    });
+
     let templatesHtml = '';
-    TEMPLATES.forEach(t => {
+    sortedTemplates.forEach(t => {
       const isActive = t.id === this.selectedTemplateId;
+      const isTopMatch = (photoCount === 1 && t.id === 'pkkmb-single') ||
+                         (photoCount === 3 && t.id === 'pkkmb-grunge') ||
+                         (photoCount === 4 && t.id === 'pkkmb-gold');
+      const badgeText = isTopMatch ? `★ BEST FOR ${photoCount} FOTO` : (t.badge || t.category);
+
       templatesHtml += `
-        <div class="template-card ${isActive ? 'active' : ''}" data-id="${escapeHtml(t.id)}" id="template-card-${escapeHtml(t.id)}">
-          <div class="template-card-badge">${escapeHtml(t.badge || t.category)}</div>
+        <div class="template-card ${isActive ? 'active' : ''} ${isTopMatch ? 'highlight-match' : ''}" data-id="${escapeHtml(t.id)}" id="template-card-${escapeHtml(t.id)}">
+          <div class="template-card-badge ${isTopMatch ? 'badge-match' : ''}">${escapeHtml(badgeText)}</div>
           <div class="template-card-name">${escapeHtml(t.name)}</div>
           <div class="template-card-desc">${escapeHtml(t.description)}</div>
         </div>

@@ -11,23 +11,32 @@ class SessionManager {
   /**
    * Start a brand new, clean photobooth session
    */
-  startNewSession(config) {
+  startNewSession(config, customPhotoCount = null) {
     this.cleanupCurrentSession();
 
     const timestamp = Date.now();
     const randomHex = Math.random().toString(36).substring(2, 7).toUpperCase();
     const sessionId = `HIPMI-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${randomHex}`;
 
+    const totalSlots = (Number.isInteger(customPhotoCount) && customPhotoCount > 0)
+      ? customPhotoCount
+      : (config?.photoCount || 4);
+
+    let defaultTemplateId = "signature";
+    if (totalSlots === 1) defaultTemplateId = "pkkmb-single";
+    else if (totalSlots === 3) defaultTemplateId = "pkkmb-grunge";
+    else if (totalSlots === 4) defaultTemplateId = "pkkmb-gold";
+
     this.currentSession = {
       sessionId,
       startedAt: timestamp,
-      totalSlots: config.photoCount || 4,
+      totalSlots,
       currentCaptureIndex: 0,
       photos: [], // Array of { index, blob, objectUrl, dataUrl }
-      selectedTemplateId: "signature",
+      selectedTemplateId: defaultTemplateId,
       customization: {
         name: "",
-        eventName: config.eventName || "Entrepreneur Summit 2026",
+        eventName: config?.eventName || "Entrepreneur Summit 2026",
         message: ""
       },
       finalBlob: null,

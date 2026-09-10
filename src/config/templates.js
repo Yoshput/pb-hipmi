@@ -366,6 +366,26 @@ export const TEMPLATES = [
         { id: 2, x: 108, y: 1262, width: 546, height: 414, borderRadius: 0, objectFit: "cover" }
       ];
     }
+  },
+
+  {
+    id: "pkkmb-single",
+    name: "PKKMB Gold VIP Pass",
+    category: "Event PKKMB",
+    description: "Official HIPMI PT Telkom University PKKMB 2026 luxury gold VIP frame (1 Photo Slot).",
+    badge: "PKKMB 1-Slot",
+    width: 688,
+    height: 1222,
+    background: "#0B0C0E",
+    textColor: "#FFFFFF",
+    accentColor: "#D4AF37",
+    frameOverlay: "/assets/templates/frame-pkkmb-single.png",
+    getSlots: (photoCount) => {
+      // Fixed 1 physical slot. Supports any session photoCount
+      return [
+        { id: 0, x: 122, y: 210, width: 444, height: 712, borderRadius: 0, objectFit: "cover" }
+      ];
+    }
   }
 ];
 

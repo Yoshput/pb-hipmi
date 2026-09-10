@@ -177,11 +177,11 @@ describe('HIPMI Photobooth - Event Configuration Resilience', () => {
 });
 
 describe('HIPMI Photobooth - Template Layout Geometry & Bounds', () => {
-  it('all 8 templates are defined with required properties', () => {
-    assert.equal(TEMPLATES.length, 8);
+  it('all 9 templates are defined with required properties', () => {
+    assert.equal(TEMPLATES.length, 9);
     const expectedIds = [
       'signature', 'bold', 'business', 'youth', 'strip', 'polaroid',
-      'pkkmb-gold', 'pkkmb-grunge'
+      'pkkmb-gold', 'pkkmb-grunge', 'pkkmb-single'
     ];
     expectedIds.forEach(id => {
       const t = getTemplateById(id);
@@ -202,6 +202,8 @@ describe('HIPMI Photobooth - Template Layout Geometry & Bounds', () => {
           assert.equal(slots.length, 4, 'pkkmb-gold must always return 4 physical slots');
         } else if (template.id === 'pkkmb-grunge') {
           assert.equal(slots.length, 3, 'pkkmb-grunge must always return 3 physical slots');
+        } else if (template.id === 'pkkmb-single') {
+          assert.equal(slots.length, 1, 'pkkmb-single must always return 1 physical slot');
         } else {
           assert.equal(slots.length, count, `Template ${template.id} with photoCount=${count} must return exactly ${count} slots`);
         }

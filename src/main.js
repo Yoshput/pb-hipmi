@@ -9,6 +9,7 @@ import { sessionManager } from './engine/sessionManager.js';
 import { cameraManager } from './engine/cameraManager.js';
 import { runPhotoboothStressTest } from './engine/stressTestRunner.js';
 import { WelcomeView } from './ui/welcomeView.js';
+import { LayoutSelectView } from './ui/layoutSelectView.js';
 import { CameraView } from './ui/cameraView.js';
 import { ReviewView } from './ui/reviewView.js';
 import { TemplateView } from './ui/templateView.js';
@@ -95,6 +96,9 @@ class PhotoboothApp {
       case 'WELCOME':
         this.goToWelcome(false);
         break;
+      case 'LAYOUT':
+        this.goToLayoutSelect(false);
+        break;
       case 'CAMERA': {
         const session = sessionManager.getSession();
         if (session) {
@@ -176,8 +180,7 @@ class PhotoboothApp {
     const view = new WelcomeView({
       eventConfig: this.eventConfig,
       onStart: () => {
-        sessionManager.startNewSession(this.eventConfig);
-        this.goToCamera(null);
+        this.goToLayoutSelect();
       },
       onOpenHistory: () => this.openHistoryModal(),
       onOpenSettings: () => this.openOperatorSettings(),
@@ -186,6 +189,32 @@ class PhotoboothApp {
 
     const el = view.render();
     this._switchView(view, 'WELCOME', pushHistory);
+    this.appEl.appendChild(el);
+  }
+
+  /**
+   * SCREEN 1.5: LAYOUT & PHOTO COUNT SELECTOR (1, 3, or 4 Photos)
+   */
+  goToLayoutSelect(pushHistory = true) {
+    if (this.isTransitioning) return;
+    this.isTransitioning = true;
+
+    cameraManager.stopCamera();
+
+    const view = new LayoutSelectView({
+      eventConfig: this.eventConfig,
+      onSelectLayout: (photoCount) => {
+        this.eventConfig.photoCount = photoCount;
+        sessionManager.startNewSession(this.eventConfig, photoCount);
+        this.goToCamera(null);
+      },
+      onBack: () => {
+        this.goToWelcome();
+      }
+    });
+
+    const el = view.render();
+    this._switchView(view, 'LAYOUT', pushHistory);
     this.appEl.appendChild(el);
   }
 
@@ -211,10 +240,11 @@ class PhotoboothApp {
     if (!session) {
       sessionManager.startNewSession(this.eventConfig);
     }
+    const currentSession = sessionManager.getSession();
 
     const view = new CameraView({
       targetSlotIndex,
-      totalSlots: this.eventConfig.photoCount || 3,
+      totalSlots: currentSession?.totalSlots || this.eventConfig.photoCount || 4,
       countdownSeconds: this.eventConfig.countdownSeconds || 3,
       eventConfig: this.eventConfig,
       onPhotoCaptured: (slotIndex, blob, dataUrl) => {
@@ -224,11 +254,11 @@ class PhotoboothApp {
         this.goToReview();
       },
       onCancel: () => {
-        const currentSession = sessionManager.getSession();
-        if (currentSession && currentSession.photos.length > 0) {
+        const activeSession = sessionManager.getSession();
+        if (activeSession && activeSession.photos.length > 0) {
           this.goToReview();
         } else {
-          this.goToWelcome();
+          this.goToLayoutSelect();
         }
       },
       onCameraError: (errType) => {
@@ -285,7 +315,8 @@ class PhotoboothApp {
         this.goToCamera(slotIndex);
       },
       onRetakeAll: () => {
-        sessionManager.startNewSession(this.eventConfig);
+        const prevSlots = session?.totalSlots || this.eventConfig.photoCount || 4;
+        sessionManager.startNewSession(this.eventConfig, prevSlots);
         this.goToCamera(null);
       },
       onContinue: () => {
