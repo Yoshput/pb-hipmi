@@ -28,6 +28,15 @@ class CanvasRenderer {
   }
 
   /**
+   * Prewarm image cache for high-speed instant rendering
+   * @param {string[]} urls
+   */
+  async prewarmCache(urls = []) {
+    if (!Array.isArray(urls) || urls.length === 0) return;
+    await Promise.allSettled(urls.filter(Boolean).map(u => this.loadImage(u)));
+  }
+
+  /**
    * Preload an image from URL or DataURL and cache it
    */
   async loadImage(src) {

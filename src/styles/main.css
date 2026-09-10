@@ -611,8 +611,8 @@
    RESPONSIVE OVERRIDES (Mobile Phone to Large Desktop Kiosks)
    ========================================================================== */
 
-/* Tablet & Smaller Laptops (<= 1024px) */
-@media (max-width: 1024px) {
+/* Tablet, Vertical Kiosks & Smaller Laptops */
+@media (max-width: 1024px), (orientation: portrait), (max-aspect-ratio: 1/1) {
   .template-screen, .result-screen {
     flex-direction: column;
     overflow-y: auto;
@@ -974,11 +974,12 @@
 
 
 /* ==========================================================================
-   MOBILE / PUBLIC QR PHOTO VIEWER (Unclipped, Full-Scrollable)
+   MOBILE / PUBLIC QR PHOTO VIEWER (Unclipped, Full-Scrollable, 60fps)
    ========================================================================== */
 .mobile-viewer-screen {
   width: 100%;
-  height: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
   overflow-y: auto !important;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
@@ -986,8 +987,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding: 32px 16px 56px;
-  background: #0E0F12;
+  padding: calc(24px + env(safe-area-inset-top, 0px)) 16px calc(40px + env(safe-area-inset-bottom, 0px));
+  background: radial-gradient(circle at 50% 10%, #151820 0%, #0B0C0E 100%);
   color: #FFFFFF;
 }
 
@@ -1010,23 +1011,27 @@
 .mobile-viewer-card {
   width: 100%;
   max-width: 440px;
-  border-radius: 14px;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65);
+  border-radius: 16px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(200, 168, 75, 0.2);
   margin-bottom: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
   background: #14161B;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  overflow: hidden;
+  transform: translateZ(0);
 }
 
 .mobile-viewer-card img {
   width: 100%;
   height: auto;
   display: block;
-  border-radius: 13px;
+  border-radius: 15px;
   object-fit: contain;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity;
 }
 
 .mobile-viewer-actions {
@@ -1039,14 +1044,74 @@
   flex-shrink: 0;
 }
 
+.mobile-viewer-actions button {
+  transition: transform 0.15s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+  will-change: transform;
+}
+
+.mobile-viewer-actions button:active {
+  transform: scale(0.97);
+}
+
 .mobile-viewer-tips {
   width: 100%;
   max-width: 440px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 16px;
   margin-bottom: 24px;
   text-align: left;
   flex-shrink: 0;
+}
+
+/* ==========================================================================
+   COMPACT LAPTOP SCREENS (Height <= 760px in Landscape, e.g. 1366x768)
+   ========================================================================== */
+@media (max-height: 760px) and (orientation: landscape) {
+  .welcome-logo-hipmi {
+    height: 60px;
+  }
+  .welcome-headline {
+    font-size: 40px;
+    margin-bottom: 8px;
+  }
+  .welcome-subheadline {
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+  .welcome-start-btn {
+    min-height: 52px;
+    padding: 0 40px;
+    font-size: 16px;
+  }
+  .result-photo-frame {
+    max-height: 72vh;
+  }
+  .result-photo-img {
+    max-height: 72vh;
+  }
+  .qr-box-card {
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+  .qr-canvas-element {
+    width: 160px !important;
+    height: 160px !important;
+  }
+  .result-title {
+    font-size: 26px;
+    margin-bottom: 4px;
+  }
+  .result-desc {
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+  .btn-primary {
+    min-height: 48px;
+    font-size: 14px;
+  }
+  .canvas-preview-wrapper {
+    max-height: 68vh;
+  }
 }

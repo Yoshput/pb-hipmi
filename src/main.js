@@ -56,6 +56,19 @@ class PhotoboothApp {
       return;
     }
 
+    // Pre-warm canvas renderer cache for instant frame & logo rendering
+    try {
+      canvasRenderer.prewarmCache([
+        this.eventConfig.logoHipmi,
+        this.eventConfig.logoTelu,
+        '/assets/templates/frame-pkkmb-gold.png',
+        '/assets/templates/frame-pkkmb-grunge.png',
+        '/assets/templates/frame-pkkmb-single.png'
+      ]);
+    } catch (e) {
+      // Non-blocking
+    }
+
     // Reset browser history state synchronously on fresh initialization to prevent stale popstate
     try {
       window.history.replaceState({ screen: 'WELCOME' }, '', window.location.pathname);
@@ -443,8 +456,8 @@ class PhotoboothApp {
             </div>
 
             <!-- Hero Image Card (Full Aspect Ratio, Never Clipped) -->
-            <div class="mobile-viewer-card">
-              <img src="${finalUrl}" alt="Photobooth Memory" id="mobile-photo-img" />
+            <div class="mobile-viewer-card skeleton-loading" id="mobile-card-wrap">
+              <img src="${finalUrl}" alt="Photobooth Memory" id="mobile-photo-img" loading="eager" decoding="async" style="opacity: 0; transition: opacity 0.35s ease;" />
             </div>
 
             <!-- Mobile Action Buttons -->
@@ -468,6 +481,25 @@ class PhotoboothApp {
           </div>
         </div>
       `;
+
+      // Smooth Skeleton Dismissal on Image Load
+      const imgEl = this.appEl.querySelector('#mobile-photo-img');
+      const cardWrap = this.appEl.querySelector('#mobile-card-wrap');
+      if (imgEl && cardWrap) {
+        if (imgEl.complete && imgEl.naturalWidth > 0) {
+          cardWrap.classList.remove('skeleton-loading');
+          imgEl.style.opacity = '1';
+        } else {
+          imgEl.onload = () => {
+            cardWrap.classList.remove('skeleton-loading');
+            imgEl.style.opacity = '1';
+          };
+          imgEl.onerror = () => {
+            cardWrap.classList.remove('skeleton-loading');
+            imgEl.style.opacity = '1';
+          };
+        }
+      }
 
       // 1-Tap HD Download Button with Blob fallback
       const dlBtn = this.appEl.querySelector('#btn-mobile-download');

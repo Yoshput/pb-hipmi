@@ -1051,18 +1051,87 @@
 @media (max-width: 960px) {
   .layout-cards-grid {
     grid-template-columns: 1fr;
-    max-width: 440px;
-    gap: 18px;
+    max-width: 480px;
+    gap: 16px;
   }
 
   .layout-select-title {
-    font-size: 26px;
+    font-size: 28px;
   }
 
   .layout-select-footer {
     flex-direction: column;
     gap: 12px;
     text-align: center;
+  }
+}
+
+@media (max-width: 640px) {
+  .layout-select-main {
+    padding: calc(54px + env(safe-area-inset-top, 0px)) 14px calc(24px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .layout-select-header {
+    margin-bottom: 20px;
+  }
+
+  .layout-select-title {
+    font-size: 24px;
+    letter-spacing: -0.3px;
+  }
+
+  .layout-select-subtitle {
+    font-size: 13px;
+  }
+
+  .layout-cards-grid {
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .layout-card {
+    padding: 16px 14px;
+    border-radius: 16px;
+  }
+
+  .layout-card-preview {
+    height: 120px;
+    margin-bottom: 12px;
+  }
+
+  .layout-card-title {
+    font-size: 17px;
+  }
+
+  .layout-card-desc {
+    font-size: 12px;
+    margin-bottom: 12px;
+  }
+
+  .layout-card-cta {
+    min-height: 44px;
+    font-size: 13px;
+  }
+
+  /* Compact Brand Header on Small Phones */
+  .brand-badge {
+    max-width: calc(100% - 130px);
+  }
+
+  .brand-org {
+    font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .brand-event-name {
+    font-size: 10px;
+  }
+
+  .icon-btn {
+    width: 40px;
+    height: 40px;
   }
 }
 
