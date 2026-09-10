@@ -405,7 +405,7 @@ export const TEMPLATES = [
       return [
         { id: 0, x: 74, y: 270, width: 1052, height: 550, borderRadius: 0, objectFit: "cover" },
         { id: 1, x: 443, y: 844, width: 683, height: 390, borderRadius: 0, objectFit: "cover" },
-        { id: 2, x: 74, y: 1258, width: 390, height: 265, borderRadius: 0, objectFit: "cover" }
+        { id: 2, x: 74, y: 1258, width: 400, height: 270, borderRadius: 0, objectFit: "cover" }
       ];
     }
   }
